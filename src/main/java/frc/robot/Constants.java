@@ -21,9 +21,9 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
 
     public static final double driveExponent = 1.8;
-    public static final double driveMaxSpeed = 1; //5
+    public static final double driveMaxSpeed = 0.5; //5
     public static final double turnExponent = 1.8;
-    public static final double turnMaxSpeed = 0.5; //11
+    public static final double turnMaxSpeed = 1; //11
 
 
     public static final double radFeedClamp = 0.5; //max heading adjustment speed

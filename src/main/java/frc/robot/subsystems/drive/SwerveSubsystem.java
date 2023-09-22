@@ -135,21 +135,14 @@ void updatePoseFromVision(){
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("fl_Val",frontLeft.getAngle());
-    SmartDashboard.putNumber("fr_Val",frontRight.getAngle());
-    SmartDashboard.putNumber("rl_Val",rearLeft.getAngle());
-    SmartDashboard.putNumber("rr_Val",rearRight.getAngle());
 
 odometry.updateWithTime(Timer.getFPGATimestamp(),pigeon.getRotation2d(),getPositions());
-
-SmartDashboard.putNumber("odometry_x",odometry.getEstimatedPosition().getX());
-SmartDashboard.putNumber("odometry_y",odometry.getEstimatedPosition().getY());
 
 updatePoseFromVision();
 
 
-field2d.setRobotPose(odometry.getEstimatedPosition());
-SmartDashboard.putData("field",field2d);
+  field2d.setRobotPose(odometry.getEstimatedPosition());
+  SmartDashboard.putData("field",field2d);
 
 
 

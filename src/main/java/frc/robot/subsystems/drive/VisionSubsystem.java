@@ -23,12 +23,12 @@ public class VisionSubsystem extends SubsystemBase {
     PhotonCamera cam;
     PhotonPoseEstimator photonPoseEstimator;
     public VisionSubsystem() {
-        selectedPoseStrategy.setDefaultOption("LOWEST_AMBIGUITY", PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
-        selectedPoseStrategy.addOption("CLOSEST_TO_REFERENCE", PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+        selectedPoseStrategy.addOption("LOWEST_AMBIGUITY", PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+        selectedPoseStrategy.setDefaultOption("CLOSEST_TO_REFERENCE", PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
         selectedPoseStrategy.addOption("CLOSEST_TO_LAST", PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_LAST_POSE);
         selectedPoseStrategy.addOption("CLOSEST_TO_CAM_HEIGHT", PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT);
 
-        SmartDashboard.putData("poseStrategy",selectedPoseStrategy);
+    //    SmartDashboard.putData("poseStrategy",selectedPoseStrategy);
 
         try{
             aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);

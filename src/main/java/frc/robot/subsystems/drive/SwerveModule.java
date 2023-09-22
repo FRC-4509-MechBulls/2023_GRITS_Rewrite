@@ -92,7 +92,6 @@ public class SwerveModule extends SubsystemBase {
              //z   }
             } catch (InterruptedException e) {}
         }).start();
-        SmartDashboard.putNumber("setVelocity",0);
     }
     double getAbsoluteEncoderRad(){
         return absoluteEncoder.getAbsolutePosition()*2*Math.PI + absoluteEncoderOffset;
