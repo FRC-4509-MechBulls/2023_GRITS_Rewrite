@@ -13,6 +13,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.SwerveSubsystem;
 import frc.robot.subsystems.drive.VisionSubsystem;
 
@@ -30,6 +31,8 @@ public class RobotContainer {
   VisionSubsystem visionSub = new VisionSubsystem();
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem(visionSub);
   RunCommand drive = new RunCommand(()->swerveSubsystem.joystickDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX()),swerveSubsystem);
+
+  Arm armSubsystemn = new Arm();
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
