@@ -4,10 +4,7 @@
 
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -55,6 +52,7 @@ public class StageOneSub extends SubsystemBase {
     primary.configForwardSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(80)),1000);
     primary.configReverseSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(45)),1000);
     primary.configForwardSoftLimitEnable(true,1000);
+    primary.configReverseSoftLimitEnable(true);
 
 
 
@@ -74,6 +72,12 @@ public class StageOneSub extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("stageOneAngle",getAngle().getDegrees());
     SmartDashboard.putNumber("rawSensor",primary.getSelectedSensorPosition());
+  }
+
+  public void setPercentOutput(double output){
+    if(output>0.5)output = 0.5;
+    if(output<-0.5)output = -0.5;
+    primary.set(ControlMode.PercentOutput,output);
   }
 
   public Rotation2d getAngle(){ //gets angle from horizontal

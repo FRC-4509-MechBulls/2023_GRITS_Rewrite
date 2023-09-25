@@ -36,7 +36,7 @@ public class VisionSubsystem extends SubsystemBase {
             e.printStackTrace();
         }
 
-        cam = new PhotonCamera("arducam1");
+        cam = new PhotonCamera("Arducam_OV2311_USB_Camera");
         Transform3d robotToCam = new Transform3d(new Translation3d(Units.inchesToMeters(-9.5), Units.inchesToMeters(6.5), Units.inchesToMeters(26)), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP, cam, robotToCam);
 
