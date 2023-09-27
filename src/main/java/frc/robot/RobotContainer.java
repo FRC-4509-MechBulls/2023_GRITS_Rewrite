@@ -39,9 +39,11 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    swerveSubsystem.setDefaultCommand(drive);
- //   stageOneSub.setDefaultCommand(new RunCommand(()->stageOneSub.setPercentOutput(driver.getLeftTriggerAxis() - driver.getRightTriggerAxis()),stageOneSub));
+   // swerveSubsystem.setDefaultCommand(drive);
 
+  RunCommand sendArmVoltage = new RunCommand(()-> stageOneSub.setPercentOutput(driver.getLeftTriggerAxis()-driver.getRightTriggerAxis()),stageOneSub);
+
+  stageOneSub.setDefaultCommand(sendArmVoltage);
 
     // Configure the trigger bindings
     configureBindings();

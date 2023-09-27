@@ -28,7 +28,7 @@ public class StageOneSub extends SubsystemBase {
     secondary.configFactoryDefault(1000);
 
     primary.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute,0,1000);
-    primary.configFeedbackNotContinuous(true,1000);
+    primary.configFeedbackNotContinuous(false,1000);
 
     primary.setNeutralMode(NeutralMode.Coast);
     secondary.setNeutralMode(NeutralMode.Coast);
@@ -49,8 +49,8 @@ public class StageOneSub extends SubsystemBase {
     secondary.follow(primary);
     secondary.setInverted(InvertType.OpposeMaster);
 
-    primary.configForwardSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(80)),1000);
-    primary.configReverseSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(45)),1000);
+    primary.configForwardSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(90)),1000);
+    primary.configReverseSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(35)),1000);
     primary.configForwardSoftLimitEnable(true,1000);
     primary.configReverseSoftLimitEnable(true);
 
@@ -71,12 +71,15 @@ public class StageOneSub extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("stageOneAngle",getAngle().getDegrees());
+
     SmartDashboard.putNumber("rawSensor",primary.getSelectedSensorPosition());
+    SmartDashboard.putNumber("convertedSensor", radToNativeSensorPosition(nativeSensorPositionToRad(primary.getSelectedSensorPosition())));
+
   }
 
   public void setPercentOutput(double output){
-    if(output>0.5)output = 0.5;
-    if(output<-0.5)output = -0.5;
+  //  if(output>0.5)output = 0.5;
+  //  if(output<-0.5)output = -0.5;
     primary.set(ControlMode.PercentOutput,output);
   }
 
@@ -95,7 +98,7 @@ public class StageOneSub extends SubsystemBase {
     if(sensorReading>Math.PI)
       sensorReading = sensorReading - 2*Math.PI;
 
-    sensorReading+= Units.degreesToRadians(22.5);
+     sensorReading+= Units.degreesToRadians(22.5);
     return sensorReading;
   }
 
@@ -110,6 +113,7 @@ public class StageOneSub extends SubsystemBase {
     angleRad -= 2 * Math.PI;
 
     angleRad /= stageOneEncoderTicksToRadians;
+
 
     return angleRad;
   }
