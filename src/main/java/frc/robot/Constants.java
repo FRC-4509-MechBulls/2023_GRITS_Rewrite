@@ -17,13 +17,24 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static class AutoConstants {
+    public static final double translationkP = 4;
+    public static final double rotationkP = 4;
+
+    public static final double maxTranslation = 1;
+    public static final double maxRotation = 1;
+
+  }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
 
     public static final double driveExponent = 1.8;
-    public static final double driveMaxSpeed = 0.5; //5
+    public static final double driveMaxSpeed = 5; //5
     public static final double turnExponent = 1.8;
-    public static final double turnMaxSpeed = 1; //11
+    public static final double turnMaxSpeed = 11; //11
+
+    public static final double maxDrivePower = 1;
 
 
     public static final double radFeedClamp = 0.5; //max heading adjustment speed
@@ -98,9 +109,51 @@ public final class Constants {
     public static final double turningMotorkF = 0.0;
 
 
-
-
-
   }
+
+
+  public static class ArmConstants {
+
+    public static final double stageOnekP = 8;
+    public static final double stageOnekI = 0.0;
+    public static final double stageOnekD = 0.0;
+    public static final double stageOnekF = 0.0;
+
+    public static final double stageTwokP = 0.3;
+    public static final double stageTwokI = 0.001;
+    public static final double stageTwokD = 2;
+    public static final double stageTwokF = 0.0;
+
+
+
+    public static final int stageOneLeftId =  11;
+    public static final int stageOneRightId = 13;
+
+    public static final double continuousCurrentLimit = 20;
+    public static final double peakCurrentLimit = 40;
+    public static final double peakCurrentTime = 250;
+
+    public static final int stageTwoPrimaryId = 49;
+    public static final int stageTwoSecondaryId = 48;
+
+    public static final int stageTwoSmartCurrentLimit = 40;
+    public static final double stageTwoSecondaryCurrentLimit = 60;
+
+    public static final double magEncoderCountsPerRotation = 4096;//4096
+    public static final double radiansPerRotation = 2 * Math.PI;
+
+    public static final double stageOneEncoderTicksToRadians =  (radiansPerRotation/magEncoderCountsPerRotation);
+
+    public static final double stageOneEncoderOffset = Units.degreesToRadians(291.9 + 90 - .145);
+
+    public static final double stageOneLength = Units.inchesToMeters(28.75);
+    public static final double[] stageOnePivotCoordinate = {-4.864, 18.66};
+
+    public static final double stageTwoLength = Units.inchesToMeters(28.75);
+    public static final double stageTwoEncoderOffset = Units.degreesToRadians(43.6);//180 - 43.6 //43.6 + 180
+    public static final double stageTwoEncoderRatio = 1;//32.0/22
+  }
+
+
 
 }

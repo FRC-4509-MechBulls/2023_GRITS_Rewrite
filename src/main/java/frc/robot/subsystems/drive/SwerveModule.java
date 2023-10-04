@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.OperatorConstants.maxDrivePower;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -60,6 +61,9 @@ public class SwerveModule extends SubsystemBase {
 
         driveMotor.setNeutralMode(NeutralMode.Coast);
         driveMotor.setInverted(driveMotorReversed);
+
+        driveMotor.configPeakOutputForward(maxDrivePower,1000);
+        driveMotor.configPeakOutputReverse(-maxDrivePower,1000);
 
         /*Turning Motor Configs */
         turningMotor.config_kP(0,turningMotorkP);
