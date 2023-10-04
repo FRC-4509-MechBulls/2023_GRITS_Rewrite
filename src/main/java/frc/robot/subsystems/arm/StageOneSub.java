@@ -49,16 +49,23 @@ public class StageOneSub extends SubsystemBase {
     secondary.follow(primary);
     secondary.setInverted(InvertType.OpposeMaster);
 
-    primary.configForwardSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(90)),1000);
+    primary.configForwardSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(95)),1000);
     primary.configReverseSoftLimitThreshold((int)radToNativeSensorPosition(Units.degreesToRadians(35)),1000);
     primary.configForwardSoftLimitEnable(true,1000);
     primary.configReverseSoftLimitEnable(true);
 
 
+   // primary.configNominalOutputForward(0.05,1000);
+   // primary.configNominalOutputReverse(-0.05,1000);
 
-  //  primary.config_kP(0,stageOnekP,1000);
-  //  primary.config_kI(0,stageOnekI,1000);
-  //  primary.config_kD(0,stageOnekD,1000);
+    primary.configPeakOutputForward(0.7,1000);
+    primary.configPeakOutputReverse(-0.7,1000);
+
+
+
+    primary.config_kP(0,stageOnekP,1000);
+    primary.config_kI(0,stageOnekI,1000);
+    primary.config_kD(0,stageOnekD,1000);
   //  primary.config_kF(0,stageOnekF,1000);
 
 
@@ -70,10 +77,14 @@ public class StageOneSub extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("stageOneAngle",getAngle().getDegrees());
+   // SmartDashboard.putNumber("stageOneAngle",getAngle().getDegrees());
 
-    SmartDashboard.putNumber("rawSensor",primary.getSelectedSensorPosition());
-    SmartDashboard.putNumber("convertedSensor", radToNativeSensorPosition(nativeSensorPositionToRad(primary.getSelectedSensorPosition())));
+   // SmartDashboard.putNumber("rawSensor",primary.getSelectedSensorPosition());
+  //  SmartDashboard.putNumber("convertedSensor", radToNativeSensorPosition(nativeSensorPositionToRad(primary.getSelectedSensorPosition())));
+
+   // SmartDashboard.putNumber("stageOneOutput",primary.getMotorOutputPercent());
+
+
 
   }
 
@@ -81,6 +92,10 @@ public class StageOneSub extends SubsystemBase {
   //  if(output>0.5)output = 0.5;
   //  if(output<-0.5)output = -0.5;
     primary.set(ControlMode.PercentOutput,output);
+  }
+
+  public void setAngle(Rotation2d angle) {
+    primary.set(ControlMode.Position,radToNativeSensorPosition(angle.getRadians()));
   }
 
   public Rotation2d getAngle(){ //gets angle from horizontal
@@ -117,6 +132,7 @@ public class StageOneSub extends SubsystemBase {
 
     return angleRad;
   }
+
 
 
 }

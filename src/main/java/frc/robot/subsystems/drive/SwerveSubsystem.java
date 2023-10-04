@@ -26,6 +26,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import java.util.Optional;
 
+import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.OperatorConstants.*;
 
@@ -142,8 +143,48 @@ updatePoseFromVision();
 
 
   field2d.setRobotPose(odometry.getEstimatedPosition());
-  SmartDashboard.putData("field",field2d);
+  //SmartDashboard.putData("field",field2d);
 
+    SmartDashboard.putNumber("odom_x",odometry.getEstimatedPosition().getX());
+    SmartDashboard.putNumber("odom_y",odometry.getEstimatedPosition().getY());
+    SmartDashboard.putNumber("odom_deg",odometry.getEstimatedPosition().getRotation().getDegrees());
+
+
+  }
+
+  public void resetOdometry(){
+    odometry.resetPosition(pigeon.getRotation2d(),getPositions(),new Pose2d());
+  }
+
+  public void driveToPose(Pose2d desiredPose){
+    Pose2d myPose = odometry.getEstimatedPosition();
+
+    double xDiff = desiredPose.getX() - myPose.getX();
+    double yDiff = desiredPose.getY() - myPose.getY();
+
+    double angDiff = desiredPose.getRotation().getRadians() - myPose.getRotation().getRadians(); //difference in angles
+
+
+    double hypot = Math.hypot(xDiff,yDiff);
+    double angleOfDiff = Math.atan2(yDiff,xDiff); //angle between two poses
+
+    double angleOfTravel = angleOfDiff + angDiff;
+
+
+
+    hypot*= translationkP;
+    angDiff*=rotationkP;
+
+    if(hypot > maxTranslation)
+      hypot = maxTranslation;
+
+    if(angDiff>maxRotation)
+      angDiff = maxRotation;
+
+
+
+
+    drive( hypot*Math.cos(angleOfTravel), hypot * Math.sin(angleOfTravel), angDiff);
 
 
   }

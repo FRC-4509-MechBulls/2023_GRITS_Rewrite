@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
@@ -15,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.StageOneSub;
+import frc.robot.subsystems.arm.StageTwoSub;
 import frc.robot.subsystems.drive.SwerveSubsystem;
 import frc.robot.subsystems.drive.VisionSubsystem;
 
@@ -27,23 +31,35 @@ import frc.robot.subsystems.drive.VisionSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  XboxController driver = new XboxController(0);
+  CommandXboxController driver = new CommandXboxController(0);
 
   VisionSubsystem visionSub = new VisionSubsystem();
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem(visionSub);
   RunCommand drive = new RunCommand(()->swerveSubsystem.joystickDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX()),swerveSubsystem);
 
-  StageOneSub stageOneSub = new StageOneSub();
+
+
+
+  Arm arm = new Arm();
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-   // swerveSubsystem.setDefaultCommand(drive);
+    swerveSubsystem.setDefaultCommand(drive);
 
-  RunCommand sendArmVoltage = new RunCommand(()-> stageOneSub.setPercentOutput(driver.getLeftTriggerAxis()-driver.getRightTriggerAxis()),stageOneSub);
+    driver.a().whileTrue(new RunCommand(()->swerveSubsystem.driveToPose(new Pose2d()),swerveSubsystem));
 
-  stageOneSub.setDefaultCommand(sendArmVoltage);
+    driver.b().onTrue(new InstantCommand(()->swerveSubsystem.resetOdometry()));
+
+//  RunCommand sendArmVoltage = new RunCommand(()-> stageOneSub.setPercentOutput(driver.getLeftTriggerAxis()-driver.getRightTriggerAxis()),stageOneSub);
+
+ // RunCommand setArmPosition = new RunCommand(()-> stageOneSub.setAngle(Rotation2d.fromDegrees(45)),stageOneSub);
+
+
+  //driver.a().whileTrue(setArmPosition);
+
+ // stageOneSub.setDefaultCommand(sendArmVoltage);
 
     // Configure the trigger bindings
     configureBindings();
