@@ -43,17 +43,25 @@ public class RobotContainer {
 
   Arm arm = new Arm();
 
+  Command stageOneToHolding = new InstantCommand(()->arm.setStageOneAngle(Rotation2d.fromDegrees(90)));
+  Command stageTwoToHolding = new InstantCommand(()->arm.setStageTwoAngle(Rotation2d.fromDegrees(15)));
+
+  Command setArmToHolding = stageOneToHolding.andThen(stageTwoToHolding);
+
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     swerveSubsystem.setDefaultCommand(drive);
 
-    driver.a().whileTrue(new RunCommand(()->swerveSubsystem.driveToPose(new Pose2d(0,0,Rotation2d.fromDegrees(0))),swerveSubsystem));
-
     driver.b().onTrue(new InstantCommand(()->swerveSubsystem.resetOdometry()));
 
-    driver.x().onTrue(new TravelToPose(swerveSubsystem,new Pose2d(),1));
+    driver.x().onTrue(new TravelToPose(swerveSubsystem,new Pose2d(),5));
+
+    driver.a().onTrue(Autos.funkyFreshAuto(swerveSubsystem, arm));
+
+    driver.y().onTrue(setArmToHolding);
 
 //  RunCommand sendArmVoltage = new RunCommand(()-> stageOneSub.setPercentOutput(driver.getLeftTriggerAxis()-driver.getRightTriggerAxis()),stageOneSub);
 

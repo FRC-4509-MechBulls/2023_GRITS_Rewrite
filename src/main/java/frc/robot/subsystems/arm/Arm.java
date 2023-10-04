@@ -22,10 +22,24 @@ public class Arm extends SubsystemBase {
 
 
   public Arm() {
-
-//      SmartDashboard.putNumber("stageOneRef",90);
-//      SmartDashboard.putNumber("stageTwoRef",15);
+      SmartDashboard.putNumber("stageOneRef",90);
+      SmartDashboard.putNumber("stageTwoRef",15);
   }
+
+   public Rotation2d getStageOneAngle(){
+        return stageOneSub.getAngle();
+    }
+    public Rotation2d getStageTwoAngle(){
+        return stageTwoSub.getAngle();
+    }
+
+    public void setStageOneAngle(Rotation2d angle){
+        stageOneSub.setAngle(angle);
+    }
+
+    public void setStageTwoAngle(Rotation2d angle){
+        stageTwoSub.setAngle(angle);
+    }
 
 
 
@@ -72,11 +86,11 @@ public class Arm extends SubsystemBase {
 
 
 
- //   stageOneSub.setAngle(Rotation2d.fromDegrees(SmartDashboard.getNumber("stageOneRef",70)));
+ //   stageOneSub.setAngle(Rotation2d.fromDegrees(SmartDashboard.getNumber("stageOneRef",90)));
  //   stageTwoSub.setAngle(Rotation2d.fromDegrees(SmartDashboard.getNumber("stageTwoRef",15)));
 
-      stageOneSub.setAngle(Rotation2d.fromDegrees(90));
-      stageTwoSub.setAngle(Rotation2d.fromDegrees(15));
+    //  stageOneSub.setAngle(Rotation2d.fromDegrees(90));
+    //  stageTwoSub.setAngle(Rotation2d.fromDegrees(15));
 
 
   }
