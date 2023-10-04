@@ -168,7 +168,7 @@ updatePoseFromVision();
     double hypot = Math.hypot(xDiff,yDiff);
     double angleOfDiff = Math.atan2(yDiff,xDiff); //angle between two poses
 
-    double angleOfTravel = angleOfDiff + angDiff;
+    double angleOfTravel = angleOfDiff - myPose.getRotation().getRadians();
 
 
 
@@ -184,8 +184,12 @@ updatePoseFromVision();
 
 
 
-    drive( hypot*Math.cos(angleOfTravel), hypot * Math.sin(angleOfTravel), angDiff);
+    drive( hypot*Math.cos(angleOfTravel), hypot * Math.sin (angleOfTravel), angDiff);
 
 
+  }
+
+  public SwerveDrivePoseEstimator getOdometry(){
+    return odometry;
   }
 }

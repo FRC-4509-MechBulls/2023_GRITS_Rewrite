@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.TravelToPose;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,9 +49,11 @@ public class RobotContainer {
 
     swerveSubsystem.setDefaultCommand(drive);
 
-    driver.a().whileTrue(new RunCommand(()->swerveSubsystem.driveToPose(new Pose2d()),swerveSubsystem));
+    driver.a().whileTrue(new RunCommand(()->swerveSubsystem.driveToPose(new Pose2d(0,0,Rotation2d.fromDegrees(0))),swerveSubsystem));
 
     driver.b().onTrue(new InstantCommand(()->swerveSubsystem.resetOdometry()));
+
+    driver.x().onTrue(new TravelToPose(swerveSubsystem,new Pose2d(),1));
 
 //  RunCommand sendArmVoltage = new RunCommand(()-> stageOneSub.setPercentOutput(driver.getLeftTriggerAxis()-driver.getRightTriggerAxis()),stageOneSub);
 
