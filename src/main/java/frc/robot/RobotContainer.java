@@ -10,9 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.TravelToPose;
+import frc.robot.commands.*;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -45,8 +43,9 @@ public class RobotContainer {
 
   Command stageOneToHolding = new InstantCommand(()->arm.setStageOneAngle(Rotation2d.fromDegrees(90)));
   Command stageTwoToHolding = new InstantCommand(()->arm.setStageTwoAngle(Rotation2d.fromDegrees(15)));
-
   Command setArmToHolding = stageOneToHolding.andThen(stageTwoToHolding);
+
+
 
 
 
@@ -55,13 +54,16 @@ public class RobotContainer {
 
     swerveSubsystem.setDefaultCommand(drive);
 
-    driver.b().onTrue(new InstantCommand(()->swerveSubsystem.resetOdometry()));
+ //   driver.b().onTrue(new InstantCommand(()->swerveSubsystem.resetOdometry()));
 
-    driver.x().onTrue(new TravelToPose(swerveSubsystem,new Pose2d(),5));
+   // driver.x().onTrue(new TravelToPose(swerveSubsystem,new Pose2d(),5));
 
-    driver.a().onTrue(Autos.funkyFreshAuto(swerveSubsystem, arm));
+  //  driver.a().onTrue(Autos.funkyFreshAuto(swerveSubsystem, arm));
 
     driver.y().onTrue(setArmToHolding);
+
+    driver.a().onTrue(ArmCommands.placeConeL3Example(arm));
+
 
 //  RunCommand sendArmVoltage = new RunCommand(()-> stageOneSub.setPercentOutput(driver.getLeftTriggerAxis()-driver.getRightTriggerAxis()),stageOneSub);
 
@@ -69,6 +71,7 @@ public class RobotContainer {
 
 
   //driver.a().whileTrue(setArmPosition);
+
 
  // stageOneSub.setDefaultCommand(sendArmVoltage);
 
