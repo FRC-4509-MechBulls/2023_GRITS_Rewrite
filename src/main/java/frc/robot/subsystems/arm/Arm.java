@@ -5,11 +5,15 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.ArmConstants.*;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 import java.awt.geom.Point2D;
 
@@ -20,25 +24,38 @@ public class Arm extends SubsystemBase {
   StageOneSub stageOneSub = new StageOneSub();
   StageTwoSub stageTwoSub = new StageTwoSub();
 
+  double stageOneReference = 0;
+  double stageTwoReference = 0;
+
+  NetworkTable armSimTable = NetworkTableInstance.getDefault().getTable("arm-sim");
 
   public Arm() {
-      SmartDashboard.putNumber("stageOneRef",90);
-      SmartDashboard.putNumber("stageTwoRef",15);
+//      SmartDashboard.putNumber("stageOneRef",90);
+//      SmartDashboard.putNumber("stageTwoRef",15);
+
   }
 
    public Rotation2d getStageOneAngle(){
+       if(Robot.isSimulation())
+           return Rotation2d.fromRadians(stageOneReference);
+
         return stageOneSub.getAngle();
     }
     public Rotation2d getStageTwoAngle(){
+           if(Robot.isSimulation())
+               return Rotation2d.fromRadians(stageTwoReference);
+
         return stageTwoSub.getAngle();
     }
 
     public void setStageOneAngle(Rotation2d angle){
         stageOneSub.setAngle(angle);
+        stageOneReference = angle.getRadians();
     }
 
     public void setStageTwoAngle(Rotation2d angle){
         stageTwoSub.setAngle(angle);
+        stageTwoReference = angle.getRadians();
     }
 
 
@@ -68,10 +85,10 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-   double[] efPosition = calculateEFPosition(stageOneSub.getAngle().getRadians(), stageTwoSub.getAngle().getRadians());
+   double[] efPosition = calculateEFPosition(getStageOneAngle().getRadians(), getStageTwoAngle().getRadians());
 
-   SmartDashboard.putNumber("stageOneAngle",stageOneSub.getAngle().getDegrees());
-   SmartDashboard.putNumber("stageTwoAngle",stageTwoSub.getAngle().getDegrees());
+   SmartDashboard.putNumber("stageOneAngle",getStageOneAngle().getDegrees());
+   SmartDashboard.putNumber("stageTwoAngle",getStageTwoAngle().getDegrees());
 
 
     SmartDashboard.putNumber("ef_x",efPosition[0]);
@@ -84,6 +101,11 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("stageTwoRad_calculated",calculatedArmAngles[1].getDegrees());
 
 
+      if(Robot.isSimulation()){
+          armSimTable.putValue("stageOneReference", NetworkTableValue.makeDouble(stageOneReference));
+          armSimTable.putValue("stageTwoReference", NetworkTableValue.makeDouble(stageTwoReference));
+          SmartDashboard.putNumber("stageTwoRef",stageTwoReference);
+      }
 
 
  //   stageOneSub.setAngle(Rotation2d.fromDegrees(SmartDashboard.getNumber("stageOneRef",90)));
@@ -91,6 +113,8 @@ public class Arm extends SubsystemBase {
 
     //  stageOneSub.setAngle(Rotation2d.fromDegrees(90));
     //  stageTwoSub.setAngle(Rotation2d.fromDegrees(15));
+
+
 
 
   }
