@@ -63,6 +63,7 @@ public class RobotContainer {
     driver.y().onTrue(setArmToHolding);
 
     driver.a().onTrue(ArmCommands.placeConeL3Example(arm));
+    driver.b().onTrue(ArmCommands.placeConeL3Direct(arm));
 
 
 //  RunCommand sendArmVoltage = new RunCommand(()-> stageOneSub.setPercentOutput(driver.getLeftTriggerAxis()-driver.getRightTriggerAxis()),stageOneSub);

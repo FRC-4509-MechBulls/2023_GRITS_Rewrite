@@ -1,35 +1,35 @@
-package frc.robot.commands;
+package frc.robot.commands.Arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.MBUtils;
 import frc.robot.subsystems.arm.Arm;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 
-public class ArmToAnglesTimed extends CommandBase {
+public class ArmToPointLinearTimed extends CommandBase {
     private final Arm arm;
 
     double stageOneInitialRad;
     double stageTwoInitialRad;
 
-
-    double stageTwoFinalRad;
-    double stageOneFinalRad;
+    double desiredX;
+    double desiredY;
 
     double secondsToTake;
 
     double initTime;
-    public ArmToAnglesTimed(Arm arm, Rotation2d stageOne, Rotation2d stageTwo, double secondsToTake) {
+    public ArmToPointLinearTimed(Arm arm, double desiredX, double desiredY, double secondsToTake) {
         this.arm = arm;
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.arm);
 
-        this.stageOneFinalRad = stageOne.getRadians();
-        this.stageTwoFinalRad = stageTwo.getRadians();
 
         this.secondsToTake = secondsToTake;
+        this.desiredX = desiredX;
+        this.desiredY = desiredY;
 
     }
 
@@ -47,11 +47,17 @@ public class ArmToAnglesTimed extends CommandBase {
     @Override
     public void execute() {
 
-        double interpolatedStageOneRad = MBUtils.lerp(stageOneInitialRad, stageOneFinalRad, (Timer.getFPGATimestamp()-initTime)/secondsToTake);
-        double interpolatedStageTwoRad = MBUtils.lerp(stageTwoInitialRad, stageTwoFinalRad, (Timer.getFPGATimestamp()-initTime)/secondsToTake);
+        if((Timer.getFPGATimestamp()-initTime)>secondsToTake) return;
 
-        arm.setStageOneAngle(Rotation2d.fromRadians(interpolatedStageOneRad));
-        arm.setStageTwoAngle(Rotation2d.fromRadians(interpolatedStageTwoRad));
+        double[] initialPosition = Arm.calculateEFPosition(stageOneInitialRad,stageTwoInitialRad);
+
+        double interpolatedX = MBUtils.lerp(initialPosition[0],desiredX,(Timer.getFPGATimestamp()-initTime)/secondsToTake);
+        double interpolatedY = MBUtils.lerp(initialPosition[1],desiredY,(Timer.getFPGATimestamp()-initTime)/secondsToTake);
+
+        Rotation2d[] angles = Arm.calculateArmAngles(interpolatedX,interpolatedY);
+
+        arm.setStageOneAngle(angles[0]);
+        arm.setStageTwoAngle(angles[1]);
     }
 
     @Override

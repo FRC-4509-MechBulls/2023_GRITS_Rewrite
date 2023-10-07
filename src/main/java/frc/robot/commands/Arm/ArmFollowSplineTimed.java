@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -63,8 +63,8 @@ PolynomialSplineFunction spline;
         Rotation2d[] angles = Arm.calculateArmAngles(interpolatedX,interpolatedY);
 
 
-        arm.setStageOneAngle(Rotation2d.fromRadians(angles[0].getRadians()));
-        arm.setStageTwoAngle(Rotation2d.fromRadians(angles[1].getRadians()));
+        arm.setStageOneAngle(angles[0]);
+        arm.setStageTwoAngle(angles[1]);
     }
 
     @Override
