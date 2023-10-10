@@ -12,15 +12,29 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 public class ArmCommands {
 
     public static Command placeConeL3Example(Arm arm){
-      //  double[] x = { 0.19, 0.64, 1.19}; // x values
-       // double[] y = { 0.03, 0.91, 0.79 }; // y values
+        //  double[] x = { 0.19, 0.64, 1.19}; // x values
+        // double[] y = { 0.03, 0.91, 0.79 }; // y values
         double[] x = { 0.19, 0.64, 1.19}; // x values
         double[] y = { 0.03, 0.91, 0.79 }; // y values
 
         SplineInterpolator interpolator = new SplineInterpolator();
         PolynomialSplineFunction spline = interpolator.interpolate(x, y);
 
-        ArmFollowSplineTimed command = new ArmFollowSplineTimed(arm, spline, false, 1);
+        ArmFollowSplineTimed command = new ArmFollowSplineTimed(arm, spline, false, 0.7);
+
+        return command;
+    }
+
+    public static Command retractFromConeL3Example(Arm arm){
+        //  double[] x = { 0.19, 0.64, 1.19}; // x values
+        // double[] y = { 0.03, 0.91, 0.79 }; // y values
+        double[] x = { 0.19, 0.64, 1.19}; // x values
+        double[] y = { 0.03, 0.91, 0.79 }; // y values
+
+        SplineInterpolator interpolator = new SplineInterpolator();
+        PolynomialSplineFunction spline = interpolator.interpolate(x, y);
+
+        ArmFollowSplineTimed command = new ArmFollowSplineTimed(arm, spline, true, 0.75);
 
         return command;
     }
@@ -28,6 +42,6 @@ public class ArmCommands {
     public static Command placeConeL3Direct(Arm arm){
 
       //  Rotation2d[] angles = Arm.calculateArmAngles(1.19,0.79);
-        return new ArmToPointLinearTimed(arm,1.19,0.79,2);
+        return new ArmToPointLinearTimed(arm,1.19,0.79,10);
     }
 }

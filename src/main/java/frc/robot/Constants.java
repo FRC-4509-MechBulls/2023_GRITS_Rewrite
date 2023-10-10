@@ -119,9 +119,9 @@ public final class Constants {
     public static final double stageOnekD = 0.0;
     public static final double stageOnekF = 0.0;
 
-    public static final double stageTwokP = 0.3;
-    public static final double stageTwokI = 0.001;
-    public static final double stageTwokD = 2;
+    public static final double stageTwokP = 0.5; //0.3
+    public static final double stageTwokI = 0.001; //0.001
+    public static final double stageTwokD = 2.5; //2
     public static final double stageTwokF = 0.0;
 
 
@@ -152,6 +152,12 @@ public final class Constants {
     public static final double stageTwoLength = Units.inchesToMeters(28.75);
     public static final double stageTwoEncoderOffset = Units.degreesToRadians(43.6);//180 - 43.6 //43.6 + 180
     public static final double stageTwoEncoderRatio = 1;//32.0/22
+
+
+    public static final double[] affAnglesDegreesX = {-90,-73,-62,-54,-39,-30,-24,-17,-13,-11,-7,0,
+            7,11,13,17,24,30,39,54,62,73,90};
+    public static final double[] affPercentOutsY = {0.01,0.02,0.025,0.03,0.035,0.0375,0.04,0.042,0.043,0.046,0.047,
+            0.047,0.046,0.043,0.042,0.04,0.0375,0.035,0.03,0.025,0.02,0.01,0};
   }
 
 

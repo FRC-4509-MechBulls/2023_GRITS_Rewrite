@@ -19,6 +19,7 @@ PolynomialSplineFunction spline;
     double secondsToTake;
 
     double initTime;
+    boolean followBackwards;
     public ArmFollowSplineTimed(Arm arm, PolynomialSplineFunction spline, boolean followBackwards, double secondsToTake) {
         this.arm = arm;
         // each subsystem used by the command must be passed into the
@@ -28,6 +29,7 @@ PolynomialSplineFunction spline;
 
         this.secondsToTake = secondsToTake;
         this.spline = spline;
+        this.followBackwards = followBackwards;
 
     }
 
@@ -55,7 +57,11 @@ PolynomialSplineFunction spline;
 
         double t = (Timer.getFPGATimestamp()-initTime)/secondsToTake;
 
+        if(followBackwards)
+            t = 1-t;
+
         if(t>1) t = 1; //in case command doesn't get killed in time
+        if(t<0) t = 0;
 
         double interpolatedX = MBUtils.lerp(min,max,t);
         double interpolatedY = spline.value(t*(max-min)+min);
