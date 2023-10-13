@@ -114,14 +114,14 @@ public final class Constants {
 
   public static class ArmConstants {
 
-    public static final double stageOnekP = 8;
+    public static final double stageOnekP = 6;
     public static final double stageOnekI = 0.0;
     public static final double stageOnekD = 0.0;
     public static final double stageOnekF = 0.0;
 
-    public static final double stageTwokP = 0.5; //0.3
+    public static final double stageTwokP = 0.9; //0.8
     public static final double stageTwokI = 0.001; //0.001
-    public static final double stageTwokD = 2.5; //2
+    public static final double stageTwokD = 2; //2
     public static final double stageTwokF = 0.0;
 
 
