@@ -12,22 +12,11 @@ public class StateControllerSub extends SubsystemBase {
 
     public enum AgArmMode {PLACING,HOLDING,INTAKING};
     public enum ItemIsFallen {FALLEN_CONE,NOT_FALLEN};
-    public enum Item{CUBE,CONE}
-    public enum PlacementLevel {BOTTOM,MIDDLE,TOP};
+    public enum ItemType {CUBE,CONE}
+    public enum PlacementLevel {LEVEL1,LEVEL2,LEVEL3};
 
-
-    public AgArmMode armMode = AgArmMode.HOLDING;
-    public ItemIsFallen itemIsFallen = ItemIsFallen.NOT_FALLEN;
-    public Item item = Item.CUBE;
-    public PlacementLevel placementLevel = PlacementLevel.BOTTOM;
-
-
-
-    public AgArmMode oldArmMode = AgArmMode.HOLDING;
-    public ItemIsFallen oldItemIsFallen = ItemIsFallen.NOT_FALLEN;
-    public Item oldItem = Item.CUBE;
-    public PlacementLevel oldPlacementLevel = PlacementLevel.BOTTOM;
-
+    ArmState desiredState = new ArmState();
+    ArmState oldState = new ArmState();
 
 
 
@@ -40,29 +29,30 @@ public class StateControllerSub extends SubsystemBase {
 
     public void periodic(){
 
-        SmartDashboard.putString("armMode",armMode.toString());
-        SmartDashboard.putString("itemIsFallen",itemIsFallen.toString());
-        SmartDashboard.putString("itemType",item.toString());
-        SmartDashboard.putString("placementLevel",placementLevel.toString());
+        SmartDashboard.putString("armMode",desiredState.armMode.toString());
+        SmartDashboard.putString("itemIsFallen",desiredState.itemIsFallen.toString());
+        SmartDashboard.putString("itemType",desiredState.itemType.toString());
+        SmartDashboard.putString("placementLevel",desiredState.placementLevel.toString());
 
 
-        if(oldArmMode == armMode && oldItemIsFallen == itemIsFallen && placementLevel == oldPlacementLevel && oldItem == item){
+        if(desiredState.equals(oldState)){
             return;
         }
 
 
-        if(oldArmMode != armMode){
 
-            if(armMode == AgArmMode.HOLDING){
-                if(oldArmMode == AgArmMode.PLACING){
-                    if(item == Item.CONE){
+        if(oldState.armMode != desiredState.armMode){
+
+            if(desiredState.armMode == AgArmMode.HOLDING){
+                if(oldState.armMode == AgArmMode.PLACING){
+                    if(desiredState.itemType == ItemType.CONE){
                         //were placing cone, now are retracting
 
                         
-                        switch(placementLevel){
-                            case  TOP: ArmCommands.retractFromConeL3(arm).schedule(); break;
-                            case MIDDLE: ArmCommands.retractFromConeL2(arm).schedule(); break;
-                            case BOTTOM: ArmCommands.retractConeL1(arm); break; //retract cone bottom
+                        switch(desiredState.placementLevel){
+                            case  LEVEL3: ArmCommands.retractFromConeL3(arm).schedule(); break;
+                            case LEVEL2: ArmCommands.retractFromConeL2(arm).schedule(); break;
+                            case LEVEL1: ArmCommands.retractConeL1(arm); break; //retract cone bottom
                         }
 
                     }
@@ -72,22 +62,22 @@ public class StateControllerSub extends SubsystemBase {
 
             }
 
-            if(armMode == AgArmMode.PLACING){
-                if(oldArmMode == AgArmMode.HOLDING){
-                    if(item == Item.CONE){
+            if(desiredState.armMode == AgArmMode.PLACING){
+                if(oldState.armMode == AgArmMode.HOLDING){
+                    if(desiredState.itemType == ItemType.CONE){
 
                         
-                        switch(placementLevel){
-                            case TOP: ArmCommands.placeConeL3Example(arm).schedule(); break;
-                            case MIDDLE: ArmCommands.placeConeL2Example(arm).schedule(); break;
-                            case BOTTOM: ArmCommands.placeConeL1(arm); break; //place cone bottom
+                        switch(desiredState.placementLevel){
+                            case LEVEL3: ArmCommands.placeConeL3Example(arm).schedule(); break;
+                            case LEVEL2: ArmCommands.placeConeL2Example(arm).schedule(); break;
+                            case LEVEL1: ArmCommands.placeConeL1(arm); break; //place cone bottom
                         }
                     }
                 }
 
             }
 
-            if(armMode == AgArmMode.INTAKING){
+            if(desiredState.armMode == AgArmMode.INTAKING){
 
             }
 
@@ -97,11 +87,7 @@ public class StateControllerSub extends SubsystemBase {
 
 
 
-
-        oldArmMode = armMode;
-        oldItemIsFallen = itemIsFallen;
-        oldItem = item;
-        oldPlacementLevel = placementLevel;
+        oldState = desiredState;
 
 
     }
@@ -109,45 +95,45 @@ public class StateControllerSub extends SubsystemBase {
     void placeholder(){};
 
     public void setArmModeToHolding() {
-        armMode = AgArmMode.HOLDING;
+        desiredState.armMode = AgArmMode.HOLDING;
     }
     public void setArmModeToIntaking() {
-        armMode = AgArmMode.INTAKING;
+        desiredState.armMode = AgArmMode.INTAKING;
     }
     public void setArmModeToPlacing() {
-        armMode = AgArmMode.PLACING;
+        desiredState.armMode = AgArmMode.PLACING;
     }
 
 
 
     public void setArmLevelBottom(){
-       placementLevel = PlacementLevel.BOTTOM;
+        desiredState.placementLevel = PlacementLevel.LEVEL1;
     }
 
     public void setArmLevelMiddle(){
-        placementLevel = PlacementLevel.MIDDLE;
+        desiredState.placementLevel = PlacementLevel.LEVEL2;
     }
 
     public void setArmLevelTop(){
-        placementLevel = PlacementLevel.TOP;
+        desiredState.placementLevel = PlacementLevel.LEVEL3;
     }
 
 
 
     public void setItemConeFallen(){
-        item = Item.CONE;
-        itemIsFallen = ItemIsFallen.FALLEN_CONE;
+        desiredState.itemType = ItemType.CONE;
+        desiredState.itemIsFallen = ItemIsFallen.FALLEN_CONE;
     }
     public void setItemConeUpright() {
-        item = Item.CONE;
-        itemIsFallen = ItemIsFallen.NOT_FALLEN;
+        desiredState.itemType = ItemType.CONE;
+        desiredState.itemIsFallen = ItemIsFallen.NOT_FALLEN;
     }
 
 
 
     public void setItemCubeFallen(){
-        item = Item.CUBE;
-        itemIsFallen = ItemIsFallen.NOT_FALLEN;
+        desiredState.itemType = ItemType.CUBE;
+        desiredState.itemIsFallen = ItemIsFallen.NOT_FALLEN;
     }
 
 
