@@ -31,7 +31,7 @@ public class Arm extends SubsystemBase {
 
   public Arm() {
       SmartDashboard.putNumber("stageOneRef",90);
-  //    SmartDashboard.putNumber("stageTwoRef",15);
+      SmartDashboard.putNumber("stageTwoRef",15);
 
   }
 
@@ -104,19 +104,19 @@ public class Arm extends SubsystemBase {
       if(Robot.isSimulation()){
           armSimTable.putValue("stageOneReference", NetworkTableValue.makeDouble(stageOneReference));
           armSimTable.putValue("stageTwoReference", NetworkTableValue.makeDouble(stageTwoReference));
-          SmartDashboard.putNumber("stageTwoRef",stageTwoReference);
+
       }
       else{
           armSimTable.putValue("stageOneReference", NetworkTableValue.makeDouble(stageOneSub.getAngle().getRadians())); //not reference but real (get real bro)
           armSimTable.putValue("stageTwoReference", NetworkTableValue.makeDouble(stageTwoSub.getAngle().getRadians()));
       }
 
+   //   SmartDashboard.putNumber("stageTwoRef",stageTwoReference);
 
+   // stageOneSub.setAngle(Rotation2d.fromDegrees(SmartDashboard.getNumber("stageOneRef",90)));
+   // stageTwoSub.setAngle(Rotation2d.fromDegrees(SmartDashboard.getNumber("stageTwoRef",15)));
 
- //   stageOneSub.setAngle(Rotation2d.fromDegrees(SmartDashboard.getNumber("stageOneRef",90)));
- //   stageTwoSub.setAngle(Rotation2d.fromDegrees(SmartDashboard.getNumber("stageTwoRef",15)));
-
-      stageTwoSub.setAbsoluteAngleDeg(stageOneSub.getAngle().getDegrees() + stageTwoSub.getAngle().getDegrees() - 180); //we do a little bit of trolling
+   //   stageTwoSub.setAbsoluteAngleDeg(stageOneSub.getAngle().getDegrees() + stageTwoSub.getAngle().getDegrees() - 180); //we do a little bit of trolling
 
     //  stageOneSub.setAngle(Rotation2d.fromDegrees(90));
     //  stageTwoSub.setAngle(Rotation2d.fromDegrees(15));

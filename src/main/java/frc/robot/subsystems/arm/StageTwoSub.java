@@ -125,10 +125,11 @@ public class StageTwoSub extends SubsystemBase {
    //   pidController.setIAccum(0);
    // }
 
-    double aff = MBUtils.interpolate(affAnglesDegreesX,affPercentOutsY,absoluteAngleDeg);
+   // double aff = MBUtils.interpolate(affAnglesDegreesX,affPercentOutsY,absoluteAngleDeg);
+    double aff = 0;
 
 
-    pidController.setReference(referenceRad, CANSparkMax.ControlType.kPosition,0,aff*12*3);
+    pidController.setReference(referenceRad, CANSparkMax.ControlType.kPosition,0,aff);
 
 
   }

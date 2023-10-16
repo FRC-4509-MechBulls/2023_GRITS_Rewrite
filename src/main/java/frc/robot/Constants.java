@@ -105,7 +105,7 @@ public final class Constants {
 
     public static final double turningMotorkP = 0.2;
     public static final double turningMotorkI = 0.0;
-    public static final double turningMotorkD = 0.0;
+    public static final double turningMotorkD = 0.01;
     public static final double turningMotorkF = 0.0;
 
 
@@ -154,10 +154,10 @@ public final class Constants {
     public static final double stageTwoEncoderRatio = 1;//32.0/22
 
 
-    public static final double[] affAnglesDegreesX = {-90,-73,-62,-54,-39,-30,-24,-17,-13,-11,-7,0,
-            7,11,13,17,24,30,39,54,62,73,90};
-    public static final double[] affPercentOutsY = {0.01,0.02,0.025,0.03,0.035,0.0375,0.04,0.042,0.043,0.046,0.047,
-            0.047,0.046,0.043,0.042,0.04,0.0375,0.035,0.03,0.025,0.02,0.01,0};
+   // public static final double[] affAnglesDegreesX = {-90,-73,-62,-54,-39,-30,-24,-17,-13,-11,-7,0,
+   //         7,11,13,17,24,30,39,54,62,73,90};
+  //  public static final double[] affPercentOutsY = {0.01,0.02,0.025,0.03,0.035,0.0375,0.04,0.042,0.043,0.046,0.047,
+  //          0.047,0.046,0.043,0.042,0.04,0.0375,0.035,0.03,0.025,0.02,0.01,0};
   }
 
 
