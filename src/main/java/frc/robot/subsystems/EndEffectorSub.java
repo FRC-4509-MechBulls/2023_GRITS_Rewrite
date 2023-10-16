@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 
 public class EndEffectorSub extends SubsystemBase {
@@ -13,8 +14,8 @@ public class EndEffectorSub extends SubsystemBase {
     private final TalonSRX endEffectorUpper;
 
     public EndEffectorSub() {
-        endEffectorLower = new TalonSRX(13);
-        endEffectorUpper= new TalonSRX(14);
+        endEffectorLower = new TalonSRX(Constants.EfConstants.EF_LOWER_PORT);
+        endEffectorUpper= new TalonSRX(Constants.EfConstants.EF_UPPER_PORT);
 
         endEffectorUpper.configFactoryDefault();
         endEffectorUpper.configFactoryDefault();
