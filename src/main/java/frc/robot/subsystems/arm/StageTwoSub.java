@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.MBUtils;
 
 import java.time.Clock;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ public class StageTwoSub extends SubsystemBase {
     SparkMaxAbsoluteEncoder encoder;
 
   public StageTwoSub() {
+    SmartDashboard.putNumber("stageTwoAFFDebug",0);
+
     primary = new CANSparkMax(stageTwoPrimaryId, CANSparkMaxLowLevel.MotorType.kBrushless);
     secondary = new CANSparkMax(stageTwoSecondaryId, CANSparkMaxLowLevel.MotorType.kBrushless);
 
@@ -92,7 +96,7 @@ public class StageTwoSub extends SubsystemBase {
     pidController.setOutputRange(-0.6,0.6);
     pidController.setPositionPIDWrappingEnabled(false);
 
-    pidController.setIZone(0.3,0);
+    pidController.setIZone(0.35,0);
     pidController.setIMaxAccum(0.05,0);
 
 
@@ -115,17 +119,31 @@ public class StageTwoSub extends SubsystemBase {
     SmartDashboard.putNumber("stageTwoError", error);
     SmartDashboard.putNumber("stageTwoIAccum",pidController.getIAccum());
 
+    //primary.set(SmartDashboard.getNumber("stageTwoAFFDebug",0));
+
    // if(error>0.25){
    //   pidController.setIAccum(0);
    // }
 
+   // double aff = MBUtils.interpolate(affAnglesDegreesX,affPercentOutsY,absoluteAngleDeg);
+    double aff = 0;
+
+
+    pidController.setReference(referenceRad, CANSparkMax.ControlType.kPosition,0,aff);
+
+
   }
 
-  double referenceRad = 0;
+  double absoluteAngleDeg;
+  public void setAbsoluteAngleDeg(double absoluteAngleDeg){
+    this.absoluteAngleDeg = absoluteAngleDeg;
+  }
+
+  double referenceRad = Units.degreesToRadians(15);
   public void setAngle(Rotation2d angle){
     referenceRad = angle.getRadians();
 
-    pidController.setReference(angle.getRadians(), CANSparkMax.ControlType.kPosition,0,0);
+   // pidController.setReference(angle.getRadians(), CANSparkMax.ControlType.kPosition,0,0);
 
   }
 

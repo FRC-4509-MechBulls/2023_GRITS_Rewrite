@@ -68,12 +68,14 @@ public void joystickDrive(double joystickX, double joystickY, double rad){
   if(Math.abs(joystickY)<0.05) joystickY = 0;
   if(Math.abs(rad)<0.05){
     rad = 0;
-  }
 
+  }
 
 
   double hypot = Math.hypot(joystickX,joystickY);
   double dir = Math.atan2(joystickY,joystickX);
+
+  dir+=odometry.getEstimatedPosition().getRotation().getRadians();
 
   hypot = Math.pow(hypot,driveExponent) * driveMaxSpeed;
 
@@ -98,17 +100,37 @@ public void joystickDrive(double joystickX, double joystickY, double rad){
   drive(-joystickY ,-joystickX ,-rad);
 }
 
+public void xConfig() {
+
+  setStatesNoDeadband(new SwerveModuleState[]{
+          new SwerveModuleState(0,Rotation2d.fromDegrees(45)),
+          new SwerveModuleState(0,Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(0,Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(0,Rotation2d.fromDegrees(45))
+
+  });
+
+}
+
+
 Rotation2d lastStillHeading = new Rotation2d();
 public void drive(double xMeters,double yMeters, double rad){
   setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(xMeters,yMeters,rad)));
 }
 
-void setStates(SwerveModuleState[] states){
-  frontLeft.setState(states[0]);
-  frontRight.setState(states[1]);
-  rearLeft.setState(states[2]);
-  rearRight.setState(states[3]);
-}
+  void setStates(SwerveModuleState[] states){
+    frontLeft.setState(states[0]);
+    frontRight.setState(states[1]);
+    rearLeft.setState(states[2]);
+    rearRight.setState(states[3]);
+  }
+
+  void setStatesNoDeadband(SwerveModuleState[] states){
+    frontLeft.setStateWithoutDeadband(states[0]);
+    frontRight.setStateWithoutDeadband(states[1]);
+    rearLeft.setStateWithoutDeadband(states[2]);
+    rearRight.setStateWithoutDeadband(states[3]);
+  }
 
 void updatePoseFromVision(){
     Optional<EstimatedRobotPose> result = visionSubsystem.getEstimatedGlobalPose(odometry.getEstimatedPosition());
@@ -168,7 +190,7 @@ updatePoseFromVision();
     double hypot = Math.hypot(xDiff,yDiff);
     double angleOfDiff = Math.atan2(yDiff,xDiff); //angle between two poses
 
-    double angleOfTravel = angleOfDiff + angDiff;
+    double angleOfTravel = angleOfDiff - myPose.getRotation().getRadians();
 
 
 
@@ -184,8 +206,12 @@ updatePoseFromVision();
 
 
 
-    drive( hypot*Math.cos(angleOfTravel), hypot * Math.sin(angleOfTravel), angDiff);
+    drive( hypot*Math.cos(angleOfTravel), hypot * Math.sin (angleOfTravel), angDiff);
 
 
+  }
+
+  public SwerveDrivePoseEstimator getOdometry(){
+    return odometry;
   }
 }

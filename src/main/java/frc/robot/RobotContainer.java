@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.EndEffectorSub;
+import frc.robot.subsystems.StateControllerSub;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.StageOneSub;
 import frc.robot.subsystems.arm.StageTwoSub;
@@ -41,25 +41,46 @@ public class RobotContainer {
 
 
   Arm arm = new Arm();
+  EndEffectorSub endEffectorSub = new EndEffectorSub();
+
+  StateControllerSub stateController = new StateControllerSub(arm,endEffectorSub);
+
+  Command stageOneToHolding = new InstantCommand(()->arm.setStageOneAngle(Rotation2d.fromDegrees(90)));
+  Command stageTwoToHolding = new InstantCommand(()->arm.setStageTwoAngle(Rotation2d.fromDegrees(15)));
+  Command setArmToHolding = stageOneToHolding.andThen(stageTwoToHolding);
+
+
+
+
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
+  //  driver.rightTrigger(0.5).onTrue(ArmCommands.placeCubeL2orL3(arm));
+//    driver.leftTrigger(0.5).onTrue(ArmCommands.retractCubeFromL2orL3(arm));
+
     swerveSubsystem.setDefaultCommand(drive);
 
-    driver.a().whileTrue(new RunCommand(()->swerveSubsystem.driveToPose(new Pose2d()),swerveSubsystem));
 
-    driver.b().onTrue(new InstantCommand(()->swerveSubsystem.resetOdometry()));
-
-//  RunCommand sendArmVoltage = new RunCommand(()-> stageOneSub.setPercentOutput(driver.getLeftTriggerAxis()-driver.getRightTriggerAxis()),stageOneSub);
-
- // RunCommand setArmPosition = new RunCommand(()-> stageOneSub.setAngle(Rotation2d.fromDegrees(45)),stageOneSub);
+    driver.start().onTrue(new InstantCommand(swerveSubsystem::resetOdometry));
 
 
-  //driver.a().whileTrue(setArmPosition);
+    driver.a().onTrue(new InstantCommand(stateController::setArmModeToIntaking));
+    driver.b().onTrue(new InstantCommand(stateController::setArmModeToHolding));
+    driver.y().onTrue(new InstantCommand(stateController::setArmModeToPlacing));
+    driver.x().onTrue(new InstantCommand(stateController::setArmModeToPostPlacing));
 
- // stageOneSub.setDefaultCommand(sendArmVoltage);
+    driver.povUp().onTrue(new InstantCommand(stateController::setArmLevelBottom));
+    driver.povRight().onTrue(new InstantCommand(stateController::setArmLevelMiddle));
+    driver.povLeft().onTrue(new InstantCommand(stateController::setArmLevelMiddle));
+    driver.povDown().onTrue(new InstantCommand(stateController::setArmLevelTop));
+    
+    driver.leftTrigger(0.5).onTrue(new InstantCommand(stateController::setItemConeFallen));
+
+    driver.leftBumper().onTrue(new InstantCommand(stateController::setItemConeUpright));
+    driver.rightBumper().onTrue(new InstantCommand(stateController::setItemCubeFallen));
+
 
     // Configure the trigger bindings
     configureBindings();
