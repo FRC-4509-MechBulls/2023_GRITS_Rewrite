@@ -41,74 +41,77 @@ public class StateControllerSub extends SubsystemBase {
 
 
 
-        if(oldState.armMode != desiredState.armMode){
+        if (oldState.armMode != desiredState.armMode) {
+            switch (desiredState.armMode) {
+                case HOLDING:
+                    switch (oldState.armMode) {
+                        case PLACING:
+                            if (desiredState.itemType == ItemType.CONE) {
+                                switch (oldState.placementLevel) {
+                                    case LEVEL3:
+                                        ArmCommands.retractFromConeL3(arm).schedule();
+                                        break;
+                                    case LEVEL2:
+                                        ArmCommands.retractFromConeL2(arm).schedule();
+                                        break;
+                                    case LEVEL1:
+                                        ArmCommands.quickHolding(arm).schedule(); // retract cone bottom
+                                        break;
+                                }
+                                terminate();
+                            }
+                            break;
 
-            if(desiredState.armMode == AgArmMode.HOLDING){
-                if(oldState.armMode == AgArmMode.PLACING){
-                    if(desiredState.itemType == ItemType.CONE){
-                        //were placing cone, now are retracting
+                        case INTAKING:
+                            if (desiredState.itemType == ItemType.CONE) {
+                                if(desiredState.itemIsFallen == ItemIsFallen.NOT_FALLEN)
+                                    ArmCommands.quickHolding(arm).schedule();
+                                else
+                                    ArmCommands.retractFromConeFallen(arm).schedule();
+                                terminate();
+                            }
+                            break;
+                    }
+                    break;
 
-                        switch(oldState.placementLevel){
-                            case  LEVEL3: ArmCommands.retractFromConeL3(arm).schedule(); break;
-                            case LEVEL2: ArmCommands.retractFromConeL2(arm).schedule(); break;
-                            case LEVEL1: ArmCommands.quickHolding(arm).schedule(); break; //retract cone bottom
+                case PLACING:
+                    if (oldState.armMode == AgArmMode.HOLDING && desiredState.itemType == ItemType.CONE) {
+                        switch (desiredState.placementLevel) {
+                            case LEVEL3:
+                                ArmCommands.placeConeL3(arm).schedule();
+                                break;
+                            case LEVEL2:
+                                ArmCommands.placeConeL2(arm).schedule();
+                                break;
+                            case LEVEL1:
+                                ArmCommands.placeConeL1(arm).schedule(); // place cone bottom
+                                break;
                         }
                         terminate();
-
                     }
+                    break;
 
-                }
-                if(oldState.armMode == AgArmMode.INTAKING){
-                    //was intaking, now holding
-                    if(desiredState.itemType == ItemType.CONE){
-                        if(desiredState.itemIsFallen == ItemIsFallen.NOT_FALLEN){
-                            ArmCommands.quickHolding(arm).schedule();
+                case INTAKING:
+                    if (oldState.armMode == AgArmMode.HOLDING) {
+                        if (desiredState.itemType == ItemType.CONE) {
+                            switch (desiredState.itemIsFallen) {
+                                case FALLEN_CONE:
+                                    ArmCommands.intakeConeFallen(arm).schedule();
+                                    break;
+                                case NOT_FALLEN:
+                                    ArmCommands.intakeConeUpright(arm).schedule();
+                                    break;
+                            }
                             terminate();
+                        } else if (desiredState.itemType == ItemType.CUBE) {
+                            // cube gangsta mode
+                            // your logic here
                         }
                     }
-
-                }
-
-
+                    break;
             }
-
-            if(desiredState.armMode == AgArmMode.PLACING){
-                if(oldState.armMode == AgArmMode.HOLDING){
-                    if(desiredState.itemType == ItemType.CONE){
-
-
-                        switch(desiredState.placementLevel){
-                            case LEVEL3: ArmCommands.placeConeL3Example(arm).schedule(); break;
-                            case LEVEL2: ArmCommands.placeConeL2Example(arm).schedule(); break;
-                            case LEVEL1: ArmCommands.placeConeL1(arm).schedule(); break; //place cone bottom
-                        }
-                        terminate();
-
-                    }
-                }
-
-            }
-
-            if(desiredState.armMode == AgArmMode.INTAKING){
-                if(oldState.armMode == AgArmMode.HOLDING){
-                    //normal intaking
-                    if(desiredState.itemType == ItemType.CONE){
-                        //intake a cone
-                        switch(desiredState.itemIsFallen){
-                            case FALLEN_CONE: break;
-                            case NOT_FALLEN: ArmCommands.intakeConeUpright(arm).schedule(); break;
-                        }
-                        terminate();
-
-                    }else if(desiredState.itemType == ItemType.CUBE){
-                        //cube gangsta mode
-
-                    }
-                }
-            }
-
-
         }
+
 
     }
     private void terminate(){

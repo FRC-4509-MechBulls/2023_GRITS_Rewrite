@@ -9,7 +9,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 public class ArmCommands {
 
-    public static Command placeConeL3Example(Arm arm){
+    public static Command placeConeL3(Arm arm){
         double[] x = { 0.19, 0.64, 1.19}; // x values
         double[] y = { 0.03, 0.91, 0.79 }; // y values
         //   double[] x = { 0.19, 0.67, 1.19}; // x values
@@ -29,7 +29,7 @@ public class ArmCommands {
         return command;
     }
 
-    public static Command placeConeL2Example(Arm arm){
+    public static Command placeConeL2(Arm arm){
         double[] x = { 0.19, 0.69, .86}; // x values
         double[] y = { 0.03, 0.48, 0.48 }; // y values
         //   double[] x = { 0.19, 0.67, 1.19}; // x values
@@ -109,6 +109,21 @@ public class ArmCommands {
         ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.505,-0.140,0.7); //0.505,-0.14
 
         return command;
+    }
+
+    public static Command intakeConeFallen(Arm arm){
+
+
+        ArmToPointLinearTimed step2 = new ArmToPointLinearTimed(arm,0.804,-0.317,1); //0.505,-0.14
+
+        return step2;
+    }
+
+    public static Command retractFromConeFallen(Arm arm){
+
+        ArmToPointLinearTimed step2 = new ArmToPointLinearTimed(arm,0.19, 0.03,0.5); //0.505,-0.14
+
+        return step2;
     }
 
 
