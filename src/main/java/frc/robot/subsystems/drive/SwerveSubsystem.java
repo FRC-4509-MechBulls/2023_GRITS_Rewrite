@@ -51,6 +51,8 @@ VisionSubsystem visionSubsystem;
 
   Field2d visionField = new Field2d();
 
+  boolean beFieldOriented = true;
+
 
 
   public SwerveSubsystem(VisionSubsystem visionSubsystem) {
@@ -89,7 +91,8 @@ public void joystickDrive(double joystickX, double joystickY, double rad){
   double dir = Math.atan2(joystickY,joystickX);
 
   //field oriented :p
-  dir+=odometry.getEstimatedPosition().getRotation().getRadians();
+  if(beFieldOriented)
+    dir+=odometry.getEstimatedPosition().getRotation().getRadians();
 
   hypot = Math.pow(hypot,driveExponent) * driveMaxSpeed;
 
@@ -113,6 +116,7 @@ public void joystickDrive(double joystickX, double joystickY, double rad){
   radFeed = MBUtils.clamp(radFeed,radFeedClamp);
 
   if(Math.abs(diffDeg)>25) radFeed = 0;
+  if(!beFieldOriented) radFeed = 0;
 
 
   drive(-joystickY ,-joystickX ,-rad - radFeed);
@@ -189,12 +193,16 @@ updatePoseFromVision();
     SmartDashboard.putNumber("odom_y",odometry.getEstimatedPosition().getY());
     SmartDashboard.putNumber("odom_deg",odometry.getEstimatedPosition().getRotation().getDegrees());
 
-
   }
 
   public void resetOdometry(){
     odometry.resetPosition(pigeon.getRotation2d(),getPositions(),new Pose2d());
   }
+
+  public void toggleFieldOriented(){
+    beFieldOriented = !beFieldOriented;
+  }
+
 
   public void driveToPose(Pose2d desiredPose){
     Pose2d myPose = odometry.getEstimatedPosition();
