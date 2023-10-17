@@ -34,7 +34,7 @@ public final class Constants {
     public static final double turnExponent = 1.8;
     public static final double turnMaxSpeed = 11; //11
 
-    public static final double maxDrivePower = 1;
+    public static final double maxDrivePower = 0.2;
 
 
     public static final double radFeedClamp = 0.5; //max heading adjustment speed

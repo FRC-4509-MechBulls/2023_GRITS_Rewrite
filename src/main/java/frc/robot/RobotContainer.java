@@ -56,6 +56,9 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
+    driver.rightTrigger(0.5).onTrue(ArmCommands.intakeConeUpright(arm));
+    driver.leftTrigger(0.5).onTrue(ArmCommands.quickHolding(arm));
+
     swerveSubsystem.setDefaultCommand(drive);
 
 
@@ -71,7 +74,7 @@ public class RobotContainer {
     driver.povLeft().onTrue(new InstantCommand(stateController::setArmLevelMiddle));
     driver.povDown().onTrue(new InstantCommand(stateController::setArmLevelTop));
     
-    driver.leftTrigger(0.5).onTrue(new InstantCommand(stateController::setItemConeFallen));
+   // driver.leftTrigger(0.5).onTrue(new InstantCommand(stateController::setItemConeFallen));
 
     driver.leftBumper().onTrue(new InstantCommand(stateController::setItemConeUpright));
     driver.rightBumper().onTrue(new InstantCommand(stateController::setItemCubeFallen));

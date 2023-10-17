@@ -96,9 +96,17 @@ public class ArmCommands {
         return command;
     }
 
-    public static Command retractConeL1(Arm arm){
+    public static Command quickHolding(Arm arm){
         //(0.19, 0.3)
-        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.19, 0.03,0.25);
+        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.19, 0.03,0.35);
+
+        return command;
+    }
+
+    public static Command intakeConeUpright(Arm arm){
+        //(0.45, -0.1)
+
+        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.505,-0.140,0.7); //0.505,-0.14
 
         return command;
     }

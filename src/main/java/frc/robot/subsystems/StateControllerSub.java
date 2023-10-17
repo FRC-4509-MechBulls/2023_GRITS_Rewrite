@@ -51,10 +51,20 @@ public class StateControllerSub extends SubsystemBase {
                         switch(oldState.placementLevel){
                             case  LEVEL3: ArmCommands.retractFromConeL3(arm).schedule(); break;
                             case LEVEL2: ArmCommands.retractFromConeL2(arm).schedule(); break;
-                            case LEVEL1: ArmCommands.retractConeL1(arm).schedule(); break; //retract cone bottom
+                            case LEVEL1: ArmCommands.quickHolding(arm).schedule(); break; //retract cone bottom
                         }
                         terminate();
 
+                    }
+
+                }
+                if(oldState.armMode == AgArmMode.INTAKING){
+                    //was intaking, now holding
+                    if(desiredState.itemType == ItemType.CONE){
+                        if(desiredState.itemIsFallen == ItemIsFallen.NOT_FALLEN){
+                            ArmCommands.quickHolding(arm).schedule();
+                            terminate();
+                        }
                     }
 
                 }
@@ -66,7 +76,7 @@ public class StateControllerSub extends SubsystemBase {
                 if(oldState.armMode == AgArmMode.HOLDING){
                     if(desiredState.itemType == ItemType.CONE){
 
-                        
+
                         switch(desiredState.placementLevel){
                             case LEVEL3: ArmCommands.placeConeL3Example(arm).schedule(); break;
                             case LEVEL2: ArmCommands.placeConeL2Example(arm).schedule(); break;
@@ -80,7 +90,21 @@ public class StateControllerSub extends SubsystemBase {
             }
 
             if(desiredState.armMode == AgArmMode.INTAKING){
+                if(oldState.armMode == AgArmMode.HOLDING){
+                    //normal intaking
+                    if(desiredState.itemType == ItemType.CONE){
+                        //intake a cone
+                        switch(desiredState.itemIsFallen){
+                            case FALLEN_CONE: break;
+                            case NOT_FALLEN: ArmCommands.intakeConeUpright(arm).schedule(); break;
+                        }
+                        terminate();
 
+                    }else if(desiredState.itemType == ItemType.CUBE){
+                        //cube gangsta mode
+
+                    }
+                }
             }
 
 
