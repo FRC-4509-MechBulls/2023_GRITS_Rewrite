@@ -6,6 +6,33 @@ public class MBUtils {
         return (1 - t) * value1 + t * value2;
     }
 
+    public static double clamp(double input, double absMax){
+        absMax = Math.abs(absMax);
+
+        if(input>absMax)
+            input = absMax;
+        if(input<-absMax)
+            input = -absMax;
+
+        return input;
+    }
+
+    public static double angleDiffDeg(double ang1, double ang2){
+        if(Math.abs(ang1-ang2)>180){
+            if(ang1>ang2)
+                return -ang1+ang2+360;
+            else
+                return -ang1+ang2-360;
+        }
+        return ang2-ang1;
+    }
+
+    public static double clamp(double input, double min, double max){
+        if(input>max) input = max;
+        if(input<min) input = min;
+        return input;
+    }
+
     public static double interpolate(double[] xValues, double[] yValues, double x) {
         // Ensure the arrays have the same length
         if (xValues.length != yValues.length) {

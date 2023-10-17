@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.MBUtils;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonPipelineResult;
 
@@ -64,17 +65,30 @@ VisionSubsystem visionSubsystem;
     return new SwerveModulePosition[]{frontLeft.getPosition(),frontRight.getPosition(),rearLeft.getPosition(),rearRight.getPosition()};
   }
 public void joystickDrive(double joystickX, double joystickY, double rad){
-  if(Math.abs(joystickX)<0.05) joystickX = 0;
-  if(Math.abs(joystickY)<0.05) joystickY = 0;
-  if(Math.abs(rad)<0.05){
-    rad = 0;
 
-  }
+    if(Math.abs(rad)<controllerDeadband)
+      rad = 0;
+
+
+  rad*=1+controllerDeadband;
+  if(rad>0)
+    rad-=controllerDeadband;
+  else if(rad<0)
+    rad+=controllerDeadband;
 
 
   double hypot = Math.hypot(joystickX,joystickY);
+
+  if(hypot<controllerDeadband)
+    hypot = 0;
+  hypot*=1+controllerDeadband;
+  hypot-=controllerDeadband;
+  if(hypot<0)
+    hypot = 0;
+
   double dir = Math.atan2(joystickY,joystickX);
 
+  //field oriented :p
   dir+=odometry.getEstimatedPosition().getRotation().getRadians();
 
   hypot = Math.pow(hypot,driveExponent) * driveMaxSpeed;
@@ -93,11 +107,15 @@ public void joystickDrive(double joystickX, double joystickY, double rad){
   if(Math.abs(rad)>radPerSecondDeadband || lastStillHeading.getDegrees() == 0){
     lastStillHeading = Rotation2d.fromDegrees(pigeon.getAngle());
   }
- // double radFeed = MB_Math.angleDiffDeg(pigeon.getAngle(),lastStillHeading.getDegrees() ) * (1.0/50) ;  //this was responsible for the slap
-  //radFeed = MB_Math.absClamp(radFeed,radFeedClamp);
+  double diffDeg = MBUtils.angleDiffDeg(pigeon.getAngle(),lastStillHeading.getDegrees());
+  double radFeed = diffDeg * (1.0/25) ;  //this was responsible for the slap
+
+  radFeed = MBUtils.clamp(radFeed,radFeedClamp);
+
+  if(Math.abs(diffDeg)>25) radFeed = 0;
 
 
-  drive(-joystickY ,-joystickX ,-rad);
+  drive(-joystickY ,-joystickX ,-rad - radFeed);
 }
 
 public void xConfig() {
