@@ -14,6 +14,7 @@ import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.EndEffectorSub;
 import frc.robot.subsystems.StateControllerSub;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.StageOneSub;
@@ -40,8 +41,9 @@ public class RobotContainer {
 
 
   Arm arm = new Arm();
+  EndEffectorSub endEffectorSub = new EndEffectorSub();
 
-  StateControllerSub stateController = new StateControllerSub(arm);
+  StateControllerSub stateController = new StateControllerSub(arm,endEffectorSub);
 
   Command stageOneToHolding = new InstantCommand(()->arm.setStageOneAngle(Rotation2d.fromDegrees(90)));
   Command stageTwoToHolding = new InstantCommand(()->arm.setStageTwoAngle(Rotation2d.fromDegrees(15)));

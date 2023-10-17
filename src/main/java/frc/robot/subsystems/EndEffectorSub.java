@@ -10,31 +10,31 @@ import frc.robot.Constants;
 
 
 public class EndEffectorSub extends SubsystemBase {
-    private final TalonSRX endEffectorLower;
-    private final TalonSRX endEffectorUpper;
+    private final TalonSRX lower;
+    private final TalonSRX upper;
 
     public EndEffectorSub() {
-        endEffectorLower = new TalonSRX(Constants.EfConstants.EF_LOWER_PORT);
-        endEffectorUpper= new TalonSRX(Constants.EfConstants.EF_UPPER_PORT);
+        lower = new TalonSRX(Constants.EfConstants.EF_LOWER_PORT);
+        upper = new TalonSRX(Constants.EfConstants.EF_UPPER_PORT);
 
-        endEffectorUpper.configFactoryDefault();
-        endEffectorUpper.configFactoryDefault();
+        upper.configFactoryDefault();
+        upper.configFactoryDefault();
 
-        endEffectorUpper.setNeutralMode(NeutralMode.Coast);
-        endEffectorLower.setNeutralMode(NeutralMode.Coast);
+        upper.setNeutralMode(NeutralMode.Coast);
+        lower.setNeutralMode(NeutralMode.Coast);
 
 
-        endEffectorUpper.setInverted(true);
-        endEffectorLower.setInverted(false);
+        upper.setInverted(true);
+        lower.setInverted(false);
 
-        endEffectorLower.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(
+        lower.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(
                 true, // enabled
                 10, // Limit (amp)
                 10, // Trigger Threshold (amp)
                 0)); // Trigger Threshold Time(s)
 
 
-        endEffectorUpper.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(
+        upper.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(
                 true, // enabled
                 10, // Limit (amp)
                 10, // Trigger Threshold (amp)
@@ -44,45 +44,45 @@ public class EndEffectorSub extends SubsystemBase {
     }
 
     public void intakeCone() {
-        endEffectorUpper.set(TalonSRXControlMode.PercentOutput, -1);
-        endEffectorLower.set(TalonSRXControlMode.PercentOutput, 1);
+        upper.set(TalonSRXControlMode.PercentOutput, -1);
+        lower.set(TalonSRXControlMode.PercentOutput, 1);
     }
 
     public void intakeCube() {
-        endEffectorUpper.set(TalonSRXControlMode.PercentOutput, 0);
-        endEffectorLower.set(TalonSRXControlMode.PercentOutput, -1);
+        upper.set(TalonSRXControlMode.PercentOutput, 0);
+        lower.set(TalonSRXControlMode.PercentOutput, -1);
     }
 
     public void holdCone() {
 
-        endEffectorUpper.set(TalonSRXControlMode.PercentOutput, -0.1);
-        endEffectorLower.set(TalonSRXControlMode.PercentOutput, 0.1);
+        upper.set(TalonSRXControlMode.PercentOutput, -0.1);
+        lower.set(TalonSRXControlMode.PercentOutput, 0.1);
     }
 
     public void holdCube() {
 
-        endEffectorUpper.set(TalonSRXControlMode.PercentOutput, 0);
-        endEffectorLower.set(TalonSRXControlMode.PercentOutput, 0);
+        upper.set(TalonSRXControlMode.PercentOutput, 0);
+        lower.set(TalonSRXControlMode.PercentOutput, 0);
     }
 
     public void placeCone() {
-        endEffectorUpper.set(TalonSRXControlMode.PercentOutput, 1);
-        endEffectorLower.set(TalonSRXControlMode.PercentOutput, -.1);
+        upper.set(TalonSRXControlMode.PercentOutput, 1);
+        lower.set(TalonSRXControlMode.PercentOutput, -.1);
     }
 
     public void placeCubeBottom() {
-        endEffectorUpper.set(TalonSRXControlMode.PercentOutput, 1);
-        endEffectorLower.set(TalonSRXControlMode.PercentOutput, -0.3);
+        upper.set(TalonSRXControlMode.PercentOutput, 1);
+        lower.set(TalonSRXControlMode.PercentOutput, -0.3);
     }
     public void placeCubeTop() {
 
-        endEffectorUpper.set(TalonSRXControlMode.PercentOutput, -1);
-        endEffectorLower.set(TalonSRXControlMode.PercentOutput, -0.3);
+        upper.set(TalonSRXControlMode.PercentOutput, -1);
+        lower.set(TalonSRXControlMode.PercentOutput, -0.3);
     }
 
     public void stopMotors() {
-        endEffectorUpper.set(TalonSRXControlMode.PercentOutput, 0);
-        endEffectorLower.set(TalonSRXControlMode.PercentOutput, 0);
+        upper.set(TalonSRXControlMode.PercentOutput, 0);
+        lower.set(TalonSRXControlMode.PercentOutput, 0);
     }
 
 }

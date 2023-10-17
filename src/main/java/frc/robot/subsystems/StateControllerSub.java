@@ -9,8 +9,9 @@ import frc.robot.subsystems.arm.Arm;
 public class StateControllerSub extends SubsystemBase {
 
     Arm arm;
+    EndEffectorSub ef;
 
-    public enum AgArmMode {PLACING,HOLDING,INTAKING};
+    public enum AgArmMode {PLACING,POST_PLACING,HOLDING,INTAKING};
     public enum ItemIsFallen {FALLEN_CONE,NOT_FALLEN};
     public enum ItemType {CUBE,CONE}
     public enum PlacementLevel {LEVEL1,LEVEL2,LEVEL3};
@@ -21,8 +22,9 @@ public class StateControllerSub extends SubsystemBase {
 
 
 
-    public StateControllerSub(Arm arm) {
+    public StateControllerSub(Arm arm, EndEffectorSub ef) {
         this.arm = arm;
+        this.ef = ef;
     }
 
 
@@ -44,6 +46,10 @@ public class StateControllerSub extends SubsystemBase {
         if (oldState.armMode != desiredState.armMode) {
             switch (desiredState.armMode) {
                 case HOLDING:
+                    switch (desiredState.itemType){
+                        case CONE:ef.holdCone(); break;
+                        case CUBE:ef.holdCube(); break;
+                    }
                     switch (oldState.armMode) {
                         case PLACING:
                             if (desiredState.itemType == ItemType.CONE) {
@@ -102,11 +108,19 @@ public class StateControllerSub extends SubsystemBase {
                                     ArmCommands.intakeConeUpright(arm).schedule();
                                     break;
                             }
+                            ef.intakeCone();
                             terminate();
                         } else if (desiredState.itemType == ItemType.CUBE) {
                             // cube gangsta mode
                             // your logic here
                         }
+                    }
+                    break;
+
+                case POST_PLACING:
+                    switch (desiredState.itemType){
+                        case CONE: ef.placeCone(); break;
+                        case CUBE: break;
                     }
                     break;
             }
@@ -155,8 +169,7 @@ public class StateControllerSub extends SubsystemBase {
         desiredState.itemIsFallen = ItemIsFallen.NOT_FALLEN;
     }
 
-
-
+    
     public void setItemCubeFallen(){
         desiredState.itemType = ItemType.CUBE;
         desiredState.itemIsFallen = ItemIsFallen.NOT_FALLEN;
