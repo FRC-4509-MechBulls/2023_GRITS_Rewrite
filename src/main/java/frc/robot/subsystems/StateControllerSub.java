@@ -48,11 +48,10 @@ public class StateControllerSub extends SubsystemBase {
                     if(desiredState.itemType == ItemType.CONE){
                         //were placing cone, now are retracting
 
-                        
                         switch(desiredState.placementLevel){
                             case  LEVEL3: ArmCommands.retractFromConeL3(arm).schedule(); break;
                             case LEVEL2: ArmCommands.retractFromConeL2(arm).schedule(); break;
-                            case LEVEL1: ArmCommands.retractConeL1(arm); break; //retract cone bottom
+                            case LEVEL1: ArmCommands.retractConeL1(arm).schedule(); break; //retract cone bottom
                         }
 
                     }
@@ -70,7 +69,7 @@ public class StateControllerSub extends SubsystemBase {
                         switch(desiredState.placementLevel){
                             case LEVEL3: ArmCommands.placeConeL3Example(arm).schedule(); break;
                             case LEVEL2: ArmCommands.placeConeL2Example(arm).schedule(); break;
-                            case LEVEL1: ArmCommands.placeConeL1(arm); break; //place cone bottom
+                            case LEVEL1: ArmCommands.placeConeL1(arm).schedule(); break; //place cone bottom
                         }
                     }
                 }
@@ -87,7 +86,7 @@ public class StateControllerSub extends SubsystemBase {
 
 
 
-        oldState = desiredState;
+        oldState = new ArmState(desiredState.armMode,desiredState.itemType,desiredState.itemIsFallen,desiredState.placementLevel);
 
 
     }

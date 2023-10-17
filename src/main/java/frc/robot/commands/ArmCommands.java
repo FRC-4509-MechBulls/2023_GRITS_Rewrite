@@ -91,14 +91,14 @@ public class ArmCommands {
     public static Command placeConeL1(Arm arm){
         //(0.45, -0.1)
 
-        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.45,-0.1,1);
+        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.45,-0.1,0.25);
 
         return command;
     }
 
     public static Command retractConeL1(Arm arm){
         //(0.19, 0.3)
-        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.19, 0.3,1);
+        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.19, 0.03,0.25);
 
         return command;
     }
