@@ -127,4 +127,42 @@ public class ArmCommands {
     }
 
 
+    public static Command placeCubeL2orL3(Arm arm){
+        double[] x = { 0.19, 0.604, 0.935}; // x values
+        double[] y = { 0.03, 0.421, 0.410 }; // y values
+
+        SplineInterpolator interpolator = new SplineInterpolator();
+        PolynomialSplineFunction spline = interpolator.interpolate(x, y);
+
+        ArmFollowSplineTimed command = new ArmFollowSplineTimed(arm, spline, false, 0.75);
+
+        return command;
+    }
+
+    public static Command placeCubeL1(Arm arm) {
+        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.185,-0.051,1);
+        return command;
+    }
+
+    public static Command retractCubeFromL2orL3(Arm arm){
+        double[] x = { 0.19, 0.604, 0.935}; // x values
+        double[] y = { 0.03, 0.421, 0.404 }; // y values
+
+        SplineInterpolator interpolator = new SplineInterpolator();
+        PolynomialSplineFunction spline = interpolator.interpolate(x, y);
+
+        ArmFollowSplineTimed command = new ArmFollowSplineTimed(arm, spline, true, 0.75);
+
+        return command;
+    }
+
+    public static Command intakeCube(Arm arm){
+        //(0.645, -0.152)
+
+        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.645,-0.152,1);
+
+        return command;
+    }
+
+
 }

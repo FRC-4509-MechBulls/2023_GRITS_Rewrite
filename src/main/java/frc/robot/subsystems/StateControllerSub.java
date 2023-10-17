@@ -51,7 +51,7 @@ public class StateControllerSub extends SubsystemBase {
                         case CUBE:ef.holdCube(); break;
                     }
                     switch (oldState.armMode) {
-                        case PLACING:
+                        case PLACING: case POST_PLACING:
                             if (desiredState.itemType == ItemType.CONE) {
                                 switch (oldState.placementLevel) {
                                     case LEVEL3:
@@ -59,6 +59,18 @@ public class StateControllerSub extends SubsystemBase {
                                         break;
                                     case LEVEL2:
                                         ArmCommands.retractFromConeL2(arm).schedule();
+                                        break;
+                                    case LEVEL1:
+                                        ArmCommands.quickHolding(arm).schedule(); // retract cone bottom
+                                        break;
+                                }
+                                terminate();
+                            }
+                            if(desiredState.itemType == ItemType.CUBE){
+                                switch (oldState.placementLevel) {
+                                    case LEVEL3:
+                                    case LEVEL2:
+                                        ArmCommands.retractCubeFromL2orL3(arm).schedule();
                                         break;
                                     case LEVEL1:
                                         ArmCommands.quickHolding(arm).schedule(); // retract cone bottom
@@ -76,7 +88,12 @@ public class StateControllerSub extends SubsystemBase {
                                     ArmCommands.retractFromConeFallen(arm).schedule();
                                 terminate();
                             }
+                            if(desiredState.itemType == ItemType.CUBE) {
+                                ArmCommands.quickHolding(arm).schedule();
+                                terminate();
+                            }
                             break;
+
                     }
                     break;
 
@@ -92,6 +109,20 @@ public class StateControllerSub extends SubsystemBase {
                             case LEVEL1:
                                 ArmCommands.placeConeL1(arm).schedule(); // place cone bottom
                                 break;
+                        }
+                        terminate();
+                    }
+
+                    if(oldState.armMode == AgArmMode.HOLDING && desiredState.itemType == ItemType.CUBE){
+                        switch (desiredState.placementLevel){
+                            case LEVEL2:
+                            case LEVEL3:
+                                ArmCommands.placeCubeL2orL3(arm).schedule();
+                                break;
+                            case LEVEL1:
+                                ArmCommands.placeCubeL1(arm).schedule();
+                                break;
+
                         }
                         terminate();
                     }
@@ -112,7 +143,9 @@ public class StateControllerSub extends SubsystemBase {
                             terminate();
                         } else if (desiredState.itemType == ItemType.CUBE) {
                             // cube gangsta mode
-                            // your logic here
+                            ArmCommands.intakeCube(arm).schedule();
+                            ef.intakeCube();
+                            terminate();
                         }
                     }
                     break;
@@ -120,10 +153,25 @@ public class StateControllerSub extends SubsystemBase {
                 case POST_PLACING:
                     switch (desiredState.itemType){
                         case CONE: ef.placeCone(); break;
-                        case CUBE: break;
+                        case CUBE:
+                            switch(desiredState.placementLevel){
+                                case LEVEL3:
+                                case LEVEL1:
+                                    ef.placeCubeTop(); break;
+                                case LEVEL2: ef.placeCubeBottom(); break;
+                            }
+                            break;
                     }
+                    terminate();
                     break;
             }
+        }
+        if(desiredState.itemType!= oldState.itemType){
+            switch(desiredState.itemType){
+                case CONE: ef.holdCone(); break;
+                case CUBE: ef.holdCube(); break;
+            }
+            oldState.itemType = desiredState.itemType;
         }
 
 
@@ -142,6 +190,10 @@ public class StateControllerSub extends SubsystemBase {
     }
     public void setArmModeToPlacing() {
         desiredState.armMode = AgArmMode.PLACING;
+    }
+    public void setArmModeToPostPlacing() {
+        if(desiredState.armMode != AgArmMode.PLACING) return;
+        desiredState.armMode = AgArmMode.POST_PLACING;
     }
 
 

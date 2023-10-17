@@ -57,8 +57,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-//    driver.rightTrigger(0.5).onTrue(ArmCommands.intakeConeFallen(arm));
-//    driver.leftTrigger(0.5).onTrue(ArmCommands.retractFromConeFallen(arm));
+  //  driver.rightTrigger(0.5).onTrue(ArmCommands.placeCubeL2orL3(arm));
+//    driver.leftTrigger(0.5).onTrue(ArmCommands.retractCubeFromL2orL3(arm));
 
     swerveSubsystem.setDefaultCommand(drive);
 
@@ -69,6 +69,7 @@ public class RobotContainer {
     driver.a().onTrue(new InstantCommand(stateController::setArmModeToIntaking));
     driver.b().onTrue(new InstantCommand(stateController::setArmModeToHolding));
     driver.y().onTrue(new InstantCommand(stateController::setArmModeToPlacing));
+    driver.x().onTrue(new InstantCommand(stateController::setArmModeToPostPlacing));
 
     driver.povUp().onTrue(new InstantCommand(stateController::setArmLevelBottom));
     driver.povRight().onTrue(new InstantCommand(stateController::setArmLevelMiddle));

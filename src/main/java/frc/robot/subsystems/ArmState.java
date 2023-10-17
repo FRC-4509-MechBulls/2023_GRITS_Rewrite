@@ -3,7 +3,7 @@ import static frc.robot.subsystems.StateControllerSub.*;
 
 public class ArmState {
    public AgArmMode armMode = AgArmMode.HOLDING;
-   public ItemType itemType = ItemType.CUBE;
+   public ItemType itemType = ItemType.CONE;
    public ItemIsFallen itemIsFallen = ItemIsFallen.NOT_FALLEN;
    public PlacementLevel placementLevel = PlacementLevel.LEVEL1;
 
