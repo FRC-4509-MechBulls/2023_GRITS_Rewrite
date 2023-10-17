@@ -160,6 +160,10 @@ public final class Constants {
   //          0.047,0.046,0.043,0.042,0.04,0.0375,0.035,0.03,0.025,0.02,0.01,0};
   }
 
+  public static class EfConstants { //end effector motor ids
+    public static int EF_UPPER_PORT = 12;
+    public static int EF_LOWER_PORT = 14;
+  }
 
 
 }
