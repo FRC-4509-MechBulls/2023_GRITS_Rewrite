@@ -175,6 +175,14 @@ public class StateControllerSub extends SubsystemBase {
         }
 
 
+        if(desiredState.armMode== AgArmMode.INTAKING && desiredState.itemIsFallen!=oldState.itemIsFallen && desiredState.itemType == ItemType.CONE){
+            if(desiredState.itemIsFallen == ItemIsFallen.FALLEN_CONE)
+                ArmCommands.intakeConeFallen(arm).schedule();
+            else
+                ArmCommands.intakeConeUpright(arm).schedule();
+            oldState.itemIsFallen = desiredState.itemIsFallen;
+        }
+
     }
     private void terminate(){
         oldState = new ArmState(desiredState.armMode,desiredState.itemType,desiredState.itemIsFallen,desiredState.placementLevel);
