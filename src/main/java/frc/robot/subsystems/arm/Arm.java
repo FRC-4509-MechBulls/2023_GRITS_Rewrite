@@ -30,8 +30,12 @@ public class Arm extends SubsystemBase {
   NetworkTable armSimTable = NetworkTableInstance.getDefault().getTable("arm-sim");
 
   public Arm() {
-      SmartDashboard.putNumber("stageOneRef",90);
-      SmartDashboard.putNumber("stageTwoRef",15);
+     // SmartDashboard.putNumber("stageOneRef",90);
+     // SmartDashboard.putNumber("stageTwoRef",15);
+
+        setStageOneAngle(Rotation2d.fromDegrees(90));
+        setStageTwoAngle(Rotation2d.fromDegrees(15));
+
 
   }
 
