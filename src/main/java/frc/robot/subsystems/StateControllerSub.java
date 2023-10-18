@@ -222,7 +222,7 @@ public class StateControllerSub extends SubsystemBase {
     }
 
     
-    public void setItemCubeFallen(){
+    public void setItemCube(){
         desiredState.itemType = ItemType.CUBE;
         desiredState.itemIsFallen = ItemIsFallen.NOT_FALLEN;
     }

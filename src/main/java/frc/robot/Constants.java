@@ -122,7 +122,7 @@ public final class Constants {
 
     public static final double stageTwokP = 0.9; //0.8
     public static final double stageTwokI = 0.001; //0.001
-    public static final double stageTwokD = 2; //2
+    public static final double stageTwokD = 3; //2
     public static final double stageTwokF = 0.0;
 
 
