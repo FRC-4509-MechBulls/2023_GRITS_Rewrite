@@ -31,6 +31,7 @@ public class RobotContainer {
   VisionSubsystem visionSub = new VisionSubsystem();
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem(visionSub);
   RunCommand drive = new RunCommand(()->swerveSubsystem.joystickDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX()),swerveSubsystem);
+  //RunCommand overcookedDrive = new RunCommand(()->swerveSubsystem.overcookedDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX(), driver.getRightY()),swerveSubsystem);
 
 
 
@@ -52,10 +53,14 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
+    Constants.FieldConstants.init();
+
   //  driver.rightTrigger(0.5).onTrue(ArmCommands.placeCubeL2orL3(arm));
 //    driver.leftTrigger(0.5).onTrue(ArmCommands.retractCubeFromL2orL3(arm));
 
     swerveSubsystem.setDefaultCommand(drive);
+
+    driver.a().whileTrue(new RunCommand(swerveSubsystem::alignWithClosestNode,swerveSubsystem));
 
 
     driver.start().onTrue(new InstantCommand(swerveSubsystem::resetOdometry));

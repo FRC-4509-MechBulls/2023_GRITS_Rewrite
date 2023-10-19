@@ -6,7 +6,6 @@ package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,14 +20,16 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants;
 import frc.robot.MBUtils;
 import org.photonvision.EstimatedRobotPose;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 import java.util.Optional;
 
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.FieldConstants.alignmentPoses;
+import static frc.robot.Constants.FieldConstants.nodeYValues;
 import static frc.robot.Constants.OperatorConstants.*;
 
 
@@ -59,14 +60,22 @@ VisionSubsystem visionSubsystem;
     pigeon.configFactoryDefault();
     pigeon.zeroGyroBiasNow();
     odometry = new SwerveDrivePoseEstimator(kinematics,pigeon.getRotation2d(),getPositions(),new Pose2d());
-    odometry.setVisionMeasurementStdDevs(VecBuilder.fill(5, 5, Units.degreesToRadians(15)));
+    odometry.setVisionMeasurementStdDevs(VecBuilder.fill(10, 10, Units.degreesToRadians(400)));
     this.visionSubsystem = visionSubsystem;
+
+    SmartDashboard.putNumber("debugGoTo_x",0);
+    SmartDashboard.putNumber("debugGoTo_y",0);
+    SmartDashboard.putNumber("debugGoTo_deg",0);
+
   }
 
   public SwerveModulePosition[] getPositions(){
     return new SwerveModulePosition[]{frontLeft.getPosition(),frontRight.getPosition(),rearLeft.getPosition(),rearRight.getPosition()};
   }
-public void joystickDrive(double joystickX, double joystickY, double rad){
+
+
+
+  public void joystickDrive(double joystickX, double joystickY, double rad){
 
     if(Math.abs(rad)<controllerDeadband)
       rad = 0;
@@ -122,6 +131,13 @@ public void joystickDrive(double joystickX, double joystickY, double rad){
   drive(-joystickY ,-joystickX ,-rad - radFeed);
 }
 
+
+public void alignWithClosestNode(){
+   // Pose2d pose = new Pose2d(SmartDashboard.getNumber("debugGoTo_x",0),SmartDashboard.getNumber("debugGoTo_y",0),Rotation2d.fromDegrees(SmartDashboard.getNumber("debugGoTo_deg",0)));
+  Pose2d closestPose = getCloesstNode();
+    driveToPose(closestPose,0.2,0.1);
+}
+
 public void xConfig() {
 
   setStatesNoDeadband(new SwerveModuleState[]{
@@ -137,6 +153,9 @@ public void xConfig() {
 
 Rotation2d lastStillHeading = new Rotation2d();
 public void drive(double xMeters,double yMeters, double rad){
+  if(Math.abs(rad)>radPerSecondDeadband || lastStillHeading.getDegrees() == 0){
+    lastStillHeading = Rotation2d.fromDegrees(pigeon.getAngle());
+  }
   setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(xMeters,yMeters,rad)));
 }
 
@@ -163,16 +182,8 @@ void updatePoseFromVision(){
       visionField.setRobotPose(result.get().estimatedPose.toPose2d());
       SmartDashboard.putData("visionField",visionField);
 
-      SmartDashboard.putNumberArray("visionPose3D",new double[]{
-              result.get().estimatedPose.getX(),
-              result.get().estimatedPose.getY(),
-              result.get().estimatedPose.getZ(),
-              result.get().estimatedPose.getRotation().getQuaternion().getW(),
-              result.get().estimatedPose.getRotation().getQuaternion().getX(),
-              result.get().estimatedPose.getRotation().getQuaternion().getY(),
-              result.get().estimatedPose.getRotation().getQuaternion().getZ(),
-      });
 
+      SmartDashboard.putNumber("resultWasPresent",Timer.getFPGATimestamp());
     }
     //add vision measurement if present while passing in current reference pose
 }
@@ -193,6 +204,47 @@ updatePoseFromVision();
     SmartDashboard.putNumber("odom_y",odometry.getEstimatedPosition().getY());
     SmartDashboard.putNumber("odom_deg",odometry.getEstimatedPosition().getRotation().getDegrees());
 
+
+    SmartDashboard.putNumberArray("odometry",new double[]{
+            odometry.getEstimatedPosition().getX(),
+            odometry.getEstimatedPosition().getY(),
+            odometry.getEstimatedPosition().getRotation().getRadians()
+    });
+
+
+
+
+    SmartDashboard.putNumber("closestNodeY",getClosestNodeY());
+
+  }
+
+  public double getClosestNodeY(){
+    double closestY = nodeYValues[0];
+    double smallestDist = Math.abs(nodeYValues[0] - odometry.getEstimatedPosition().getY());
+
+    for(int i = 0; i< nodeYValues.length; i++){
+      double dist = Math.abs(nodeYValues[i] - odometry.getEstimatedPosition().getY());
+      if(dist<smallestDist){
+        smallestDist = dist;
+        closestY = nodeYValues[i];
+      }
+    }
+
+    return closestY;
+  }
+
+  public Pose2d getCloesstNode(){
+    double closestDist = Math.hypot(odometry.getEstimatedPosition().getX() - Constants.FieldConstants.alignmentPoses[0].getX(),odometry.getEstimatedPosition().getY() -  Constants.FieldConstants.alignmentPoses[0].getY());
+    Pose2d output = Constants.FieldConstants.alignmentPoses[0];
+
+    for(int i = 0; i<alignmentPoses.length; i++){
+      double dist = Math.hypot(odometry.getEstimatedPosition().getX() - Constants.FieldConstants.alignmentPoses[i].getX(),odometry.getEstimatedPosition().getY() -  Constants.FieldConstants.alignmentPoses[i].getY());
+      if(dist<closestDist){
+        closestDist = dist;
+        output = alignmentPoses[i];
+      }
+    }
+    return output;
   }
 
   public void resetOdometry(){
@@ -203,14 +255,20 @@ updatePoseFromVision();
     beFieldOriented = !beFieldOriented;
   }
 
-
   public void driveToPose(Pose2d desiredPose){
+    driveToPose(desiredPose,1,1);
+  }
+
+  public void driveToPose(Pose2d desiredPose, double maxSpeed, double maxRot){
     Pose2d myPose = odometry.getEstimatedPosition();
 
     double xDiff = desiredPose.getX() - myPose.getX();
     double yDiff = desiredPose.getY() - myPose.getY();
 
-    double angDiff = desiredPose.getRotation().getRadians() - myPose.getRotation().getRadians(); //difference in angles
+//    double angDiff = desiredPose.getRotation().getRadians() - myPose.getRotation().getRadians(); //difference in angles
+
+    double angDiff = -Units.degreesToRadians(MBUtils.angleDiffDeg(desiredPose.getRotation().getDegrees(), myPose.getRotation().getDegrees()));
+
 
 
     double hypot = Math.hypot(xDiff,yDiff);
@@ -223,11 +281,11 @@ updatePoseFromVision();
     hypot*= translationkP;
     angDiff*=rotationkP;
 
-    if(hypot > maxTranslation)
-      hypot = maxTranslation;
 
-    if(angDiff>maxRotation)
-      angDiff = maxRotation;
+    hypot = MBUtils.clamp(hypot,maxTranslation);
+    hypot = MBUtils.clamp(hypot,maxSpeed);
+    angDiff = MBUtils.clamp(angDiff,maxRotation);
+    angDiff = MBUtils.clamp(angDiff,maxRot);
 
 
 
@@ -236,6 +294,8 @@ updatePoseFromVision();
 
 
   }
+
+
 
   public SwerveDrivePoseEstimator getOdometry(){
     return odometry;

@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+
+import java.util.ArrayList;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -22,7 +26,7 @@ public final class Constants {
     public static final double translationkP = 4;
     public static final double rotationkP = 4;
 
-    public static final double maxTranslation = 2;
+    public static final double maxTranslation = 1;
     public static final double maxRotation = 2;
 
   }
@@ -167,4 +171,32 @@ public final class Constants {
   }
 
 
+  public static final class FieldConstants{
+
+    public static Pose2d[] alignmentPoses = new Pose2d[18];
+    public static void init(){
+      for(int i = 0; i<9; i++){
+        alignmentPoses[i] = new Pose2d(blueAlignmentX,nodeYValues[i], Rotation2d.fromDegrees(180));
+        alignmentPoses[i+9] = new Pose2d(redAlignmentX,nodeYValues[i], Rotation2d.fromDegrees(0));
+      }
+    }
+    public static final double[] nodeYValues = new double[] {
+            Units.inchesToMeters(20.19 + 22.0 * 0),
+            Units.inchesToMeters(20.19 + 22.0 * 1),
+            Units.inchesToMeters(20.19 + 22.0 * 2),
+            Units.inchesToMeters(20.19 + 22.0 * 3),
+            Units.inchesToMeters(20.19 + 22.0 * 4),
+            Units.inchesToMeters(20.19 + 22.0 * 5),
+            Units.inchesToMeters(20.19 + 22.0 * 6),
+            Units.inchesToMeters(20.19 + 22.0 * 7),
+            Units.inchesToMeters(20.19 + 22.0 * 8)
+  };
+
+
+
+    public static final double blueAlignmentX = Units.inchesToMeters(69.0625);
+    public static final double fieldLength = Units.inchesToMeters(651.25);
+    public static final double redAlignmentX = fieldLength - blueAlignmentX;
+
+  }
 }
