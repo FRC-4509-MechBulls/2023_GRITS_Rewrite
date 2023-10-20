@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.Arm.ArmFollowSplineTimed;
 import frc.robot.commands.Arm.ArmToPointLinearTimed;
@@ -114,7 +115,7 @@ public class ArmCommands {
     public static Command intakeConeFallen(Arm arm){
 
 
-        ArmToPointLinearTimed step2 = new ArmToPointLinearTimed(arm,0.804,-0.317,1); //0.505,-0.14
+        ArmToPointLinearTimed step2 = new ArmToPointLinearTimed(arm,0.804,-0.317 - Units.inchesToMeters(1.5),1); //0.505,-0.14
 
         return step2;
     }

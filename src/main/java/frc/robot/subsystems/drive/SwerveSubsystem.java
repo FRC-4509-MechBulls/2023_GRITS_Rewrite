@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 import frc.robot.MBUtils;
+import frc.robot.Robot;
 import org.photonvision.EstimatedRobotPose;
 
 import java.util.Optional;
@@ -156,8 +157,32 @@ public void drive(double xMeters,double yMeters, double rad){
   if(Math.abs(rad)>radPerSecondDeadband || lastStillHeading.getDegrees() == 0){
     lastStillHeading = Rotation2d.fromDegrees(pigeon.getAngle());
   }
-  setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(xMeters,yMeters,rad)));
+  SwerveModuleState[] states = kinematics.toSwerveModuleStates(new ChassisSpeeds(xMeters,yMeters,rad));
+
+  setStates(states);
+
+  if(Robot.isSimulation()){
+    if(lastSimDriveUpdateTime == 0)
+      lastSimDriveUpdateTime = Timer.getFPGATimestamp();
+
+    Rotation2d newAngle = Rotation2d.fromRadians(odometry.getEstimatedPosition().getRotation().getRadians() + rad * (Timer.getFPGATimestamp() - lastSimDriveUpdateTime));
+
+    double hypot = Math.hypot(xMeters,yMeters);
+    double angOfTranslation = Math.atan2(yMeters,xMeters);
+
+    Pose2d newPose = new Pose2d(
+            odometry.getEstimatedPosition().getX() + hypot*Math.cos(angOfTranslation+newAngle.getRadians()) *  (Timer.getFPGATimestamp() - lastSimDriveUpdateTime),
+            odometry.getEstimatedPosition().getY() + hypot*Math.sin(angOfTranslation+newAngle.getRadians())  *(Timer.getFPGATimestamp() - lastSimDriveUpdateTime),
+            newAngle
+    );
+
+    odometry.addVisionMeasurement(newPose, Timer.getFPGATimestamp(), VecBuilder.fill(0, 0, Units.degreesToRadians(0))); //trust, bro
+    lastSimDriveUpdateTime = Timer.getFPGATimestamp();
+  }
+
 }
+double lastSimDriveUpdateTime = 0;
+
 
   void setStates(SwerveModuleState[] states){
     frontLeft.setState(states[0]);
