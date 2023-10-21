@@ -24,10 +24,10 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final double translationkP = 4;
-    public static final double rotationkP = 4;
+    public static final double rotationkP = 16;
 
-    public static final double maxTranslation = 1;
-    public static final double maxRotation = 2;
+    public static final double maxTranslation = 5;
+    public static final double maxRotation = 11;
 
   }
   public static class OperatorConstants {
@@ -37,6 +37,7 @@ public final class Constants {
     public static final double driveMaxSpeed = 5; //5
     public static final double turnExponent = 1.8;
     public static final double turnMaxSpeed = 11; //11
+
 
     public static final double maxDrivePower = 1;
 
@@ -174,12 +175,7 @@ public final class Constants {
   public static final class FieldConstants{
 
     public static Pose2d[] alignmentPoses = new Pose2d[18];
-    public static void init(){
-      for(int i = 0; i<9; i++){
-        alignmentPoses[i] = new Pose2d(blueAlignmentX,nodeYValues[i], Rotation2d.fromDegrees(180));
-        alignmentPoses[i+9] = new Pose2d(redAlignmentX,nodeYValues[i], Rotation2d.fromDegrees(0));
-      }
-    }
+
     public static final double[] nodeYValues = new double[] {
             Units.inchesToMeters(20.19 + 22.0 * 0),
             Units.inchesToMeters(20.19 + 22.0 * 1),
@@ -197,6 +193,13 @@ public final class Constants {
     public static final double blueAlignmentX = Units.inchesToMeters(69.0625);
     public static final double fieldLength = Units.inchesToMeters(651.25);
     public static final double redAlignmentX = fieldLength - blueAlignmentX;
+
+    static{
+      for(int i = 0; i<9; i++){
+        alignmentPoses[i] = new Pose2d(blueAlignmentX,nodeYValues[i], Rotation2d.fromDegrees(180));
+        alignmentPoses[i+9] = new Pose2d(redAlignmentX,nodeYValues[i], Rotation2d.fromDegrees(0));
+      }
+    }
 
   }
 }

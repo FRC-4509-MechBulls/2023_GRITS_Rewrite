@@ -210,6 +210,17 @@ public class StateControllerSub extends SubsystemBase {
         desiredState.placementLevel = PlacementLevel.LEVEL3;
     }
 
+    public void setOverallStateSafe(ArmState state){
+        desiredState.itemType = state.itemType;
+        periodic();
+        desiredState.itemIsFallen = state.itemIsFallen;
+        periodic();
+        desiredState.placementLevel = state.placementLevel;
+        periodic();
+        desiredState.armMode = state.armMode;
+        periodic();
+    }
+
 
 
     public void setItemConeFallen(){

@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.TravelToPose;
 import frc.robot.subsystems.EndEffectorSub;
 import frc.robot.subsystems.StateControllerSub;
 import frc.robot.subsystems.arm.Arm;
@@ -53,7 +55,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    Constants.FieldConstants.init();
+
 
   //  driver.rightTrigger(0.5).onTrue(ArmCommands.placeCubeL2orL3(arm));
 //    driver.leftTrigger(0.5).onTrue(ArmCommands.retractCubeFromL2orL3(arm));
@@ -84,6 +86,9 @@ public class RobotContainer {
     operator.rightBumper().onTrue(new InstantCommand(stateController::setItemCube));
     operator.rightTrigger(0.5).onTrue(new InstantCommand(stateController::setItemCube));
 
+    driver.b().onTrue(Autos.skibidiAutonomous(swerveSubsystem,arm,stateController,false));
+
+    driver.y().onTrue(new TravelToPose(swerveSubsystem, new Pose2d(swerveSubsystem.getOdometry().getEstimatedPosition().getX(),swerveSubsystem.getOdometry().getEstimatedPosition().getY(), Rotation2d.fromDegrees(0)),1,1));
 
     // Configure the trigger bindings
     configureBindings();

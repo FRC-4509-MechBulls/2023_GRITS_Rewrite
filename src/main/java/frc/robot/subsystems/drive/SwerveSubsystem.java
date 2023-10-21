@@ -135,8 +135,8 @@ VisionSubsystem visionSubsystem;
 
 public void alignWithClosestNode(){
    // Pose2d pose = new Pose2d(SmartDashboard.getNumber("debugGoTo_x",0),SmartDashboard.getNumber("debugGoTo_y",0),Rotation2d.fromDegrees(SmartDashboard.getNumber("debugGoTo_deg",0)));
-  Pose2d closestPose = getCloesstNode();
-    driveToPose(closestPose,0.2,0.1);
+  Pose2d closestPose = getClosestNode();
+    driveToPose(closestPose,0.5,0.5);
 }
 
 public void xConfig() {
@@ -258,7 +258,7 @@ updatePoseFromVision();
     return closestY;
   }
 
-  public Pose2d getCloesstNode(){
+  public Pose2d getClosestNode(){
     double closestDist = Math.hypot(odometry.getEstimatedPosition().getX() - Constants.FieldConstants.alignmentPoses[0].getX(),odometry.getEstimatedPosition().getY() -  Constants.FieldConstants.alignmentPoses[0].getY());
     Pose2d output = Constants.FieldConstants.alignmentPoses[0];
 
@@ -276,12 +276,18 @@ updatePoseFromVision();
     odometry.resetPosition(pigeon.getRotation2d(),getPositions(),new Pose2d());
   }
 
+
+  public void resetOdometry(Pose2d newPose){
+    odometry.resetPosition(pigeon.getRotation2d(),getPositions(),newPose);
+  }
+
+
   public void toggleFieldOriented(){
     beFieldOriented = !beFieldOriented;
   }
 
   public void driveToPose(Pose2d desiredPose){
-    driveToPose(desiredPose,1,1);
+    driveToPose(desiredPose, maxRotation,maxTranslation);
   }
 
   public void driveToPose(Pose2d desiredPose, double maxSpeed, double maxRot){
