@@ -166,12 +166,12 @@ public class StateControllerSub extends SubsystemBase {
                     break;
             }
         }
-        if(desiredState.itemType!= oldState.itemType){
+        if(desiredState.itemType!= oldState.itemType){ //TODO: maybe remove this?
             switch(desiredState.itemType){
                 case CONE: ef.holdCone(); break;
                 case CUBE: ef.holdCube(); break;
             }
-            oldState.itemType = desiredState.itemType;
+            oldState.itemType = desiredState.itemType; //remove this too
         }
 
 

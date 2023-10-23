@@ -136,7 +136,7 @@ VisionSubsystem visionSubsystem;
 public void alignWithClosestNode(){
    // Pose2d pose = new Pose2d(SmartDashboard.getNumber("debugGoTo_x",0),SmartDashboard.getNumber("debugGoTo_y",0),Rotation2d.fromDegrees(SmartDashboard.getNumber("debugGoTo_deg",0)));
   Pose2d closestPose = getClosestNode();
-    driveToPose(closestPose,0.5,0.5);
+    driveToPose(closestPose,1,1);
 }
 
 public void xConfig() {
