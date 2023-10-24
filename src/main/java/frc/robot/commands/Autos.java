@@ -44,8 +44,8 @@ public class Autos {
         Command resetPose = new InstantCommand(()->swerveSubsystem.resetOdometry(new Pose2d(initXFinal, initY, initHeading)));
         Command setInitialArmState = new InstantCommand(()->stateControllerSub.setOverallStateSafe(new ArmState(StateControllerSub.AgArmMode.HOLDING, StateControllerSub.ItemType.CONE, StateControllerSub.ItemIsFallen.FALLEN_CONE, StateControllerSub.PlacementLevel.LEVEL3)));
 
-        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(1)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.5));
-        Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding);
+        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(2)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.2));
+        Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding).andThen(new WaitCommand(0.5));
 
         Pose2d inBetweenPose = new Pose2d(
                 (initX + (initX+1.709*beBackwardsNow)) / 2.0,
@@ -53,20 +53,20 @@ public class Autos {
                 Rotation2d.fromDegrees(90*beBackwardsNow+angleToAddIfBackwards)
         );
 
-        Command goHalfwayToPose1 = new TravelToPose(swerveSubsystem, inBetweenPose, 1, 0); //makes sure we don't kill any volunteers
+        Command goHalfwayToPose1 = new TravelToPose(swerveSubsystem, inBetweenPose, 0.75, 0); //makes sure we don't kill any volunteers
 
-        Command goToPose1 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 1.709 * beBackwardsNow, initY+ 0.239, Rotation2d.fromDegrees(0*beBackwardsNow + angleToAddIfBackwards)), 2,0);
+        Command goToPose1 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 1.709 * beBackwardsNow, initY+ 0.239, Rotation2d.fromDegrees(0*beBackwardsNow + angleToAddIfBackwards)), 0.75,0);
         Command setIntaking = new InstantCommand(stateControllerSub::setArmModeToIntaking);
         Command goToPose2 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(0*beBackwardsNow + angleToAddIfBackwards)), 2,0);
 
-        Command setHeading = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(10*beBackwardsNow + angleToAddIfBackwards)), 0.4,0);
-        Command goToConePickup = new TravelToPose(swerveSubsystem, new Pose2d(initX + 5.342 * beBackwardsNow, initY+ 0.400, Rotation2d.fromDegrees(10*beBackwardsNow + angleToAddIfBackwards)), 2,0);
+        Command setHeading = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(10*beBackwardsNow + angleToAddIfBackwards)), 0.2,0.2);
+        Command goToConePickup = new TravelToPose(swerveSubsystem, new Pose2d(initX + 5.342 * beBackwardsNow, initY+ 0.400, Rotation2d.fromDegrees(10*beBackwardsNow + angleToAddIfBackwards)), 2,1);
         Command setHolding = new InstantCommand(stateControllerSub::setArmModeToHolding);
 
         Command returnToPose2 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2,0);
         Command returnToPose1 = new TravelToPose(swerveSubsystem, new Pose2d(initX + Units.inchesToMeters(12)*beBackwardsNow, initY+ 0.239, Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2.5,0);
 
-        Command crabWalk = new TravelToPose(swerveSubsystem, new Pose2d(initX + Units.inchesToMeters(12) * beBackwardsNow, nodeYValues[2], Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2.5,0.25);
+        Command crabWalk = new TravelToPose(swerveSubsystem, new Pose2d(initX + Units.inchesToMeters(12) * beBackwardsNow, nodeYValues[2], Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 1.25,0.25);
 
         Command placeCone = new InstantCommand(stateControllerSub::setArmModeToPlacing);
 
@@ -105,10 +105,10 @@ public class Autos {
         Command resetPose = new InstantCommand(()->swerveSubsystem.resetOdometry(new Pose2d(initXFinal, initY, initHeading)));
         Command setInitialArmState = new InstantCommand(()->stateControllerSub.setOverallStateSafe(new ArmState(StateControllerSub.AgArmMode.HOLDING, StateControllerSub.ItemType.CONE, StateControllerSub.ItemIsFallen.FALLEN_CONE, StateControllerSub.PlacementLevel.LEVEL3)));
         Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(1.75)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.25));
-        Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding).andThen(new WaitCommand(1));
-        Command leaveCommunity = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.076 * beBackwardsNow, initY, initHeading),2,0.25);
-        Command centerOnChargeStation = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.076 * beBackwardsNow, nodeYValues[4], initHeading),3,0.25); // 5.83
-        Command goToChargeStation = new TravelToPose(swerveSubsystem,new Pose2d(initX + Units.inchesToMeters(81.6275) * beBackwardsNow, nodeYValues[4], initHeading), 2);
+        Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding).andThen(new WaitCommand(0.75));
+        Command leaveCommunity = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.576 * beBackwardsNow, initY, initHeading),4,1);
+        Command centerOnChargeStation = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.076 * beBackwardsNow, nodeYValues[4], initHeading),0.5,1); // 5.83
+        Command goToChargeStation = new TravelToPose(swerveSubsystem,new Pose2d(initX + Units.inchesToMeters(81.6275) * beBackwardsNow, nodeYValues[4], initHeading), 3);
        // Command balance = new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem);
         Command balance = new Balance(swerveSubsystem, 5);
 
