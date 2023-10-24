@@ -41,6 +41,8 @@ public class EndEffectorSub extends SubsystemBase {
                 0)); // Trigger Threshold Time(s)
 
 
+        holdCone();
+
     }
 
     public void intakeCone() {
