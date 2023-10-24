@@ -24,7 +24,7 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final double translationkP = 4;
-    public static final double rotationkP = 16;
+    public static final double rotationkP = 4;
 
     public static final double maxTranslation = 2;
     public static final double maxRotation = 2;

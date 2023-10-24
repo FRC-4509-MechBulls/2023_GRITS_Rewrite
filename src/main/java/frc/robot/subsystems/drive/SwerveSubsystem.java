@@ -176,7 +176,9 @@ public void drive(double xMeters,double yMeters, double rad){
             newAngle
     );
 
-    odometry.addVisionMeasurement(newPose, Timer.getFPGATimestamp(), VecBuilder.fill(0, 0, Units.degreesToRadians(0))); //trust, bro
+  //  odometry.addVisionMeasurement(newPose, Timer.getFPGATimestamp(), VecBuilder.fill(0, 0, Units.degreesToRadians(0))); //trust, bro
+
+    resetOdometry(newPose);
     lastSimDriveUpdateTime = Timer.getFPGATimestamp();
   }
 
@@ -196,6 +198,21 @@ double lastSimDriveUpdateTime = 0;
     frontRight.setStateWithoutDeadband(states[1]);
     rearLeft.setStateWithoutDeadband(states[2]);
     rearRight.setStateWithoutDeadband(states[3]);
+  }
+
+  public void autoBalanceForward(){
+    double roll = pigeon.getRoll(); //probably in degrees
+    double speedForward = roll*(1.0/115);
+
+    if(roll>15)
+      speedForward = 0.5;
+    if(roll<-15)
+      speedForward = -0.5;
+
+
+    speedForward = MBUtils.clamp(speedForward, 0.5);
+
+    drive(-speedForward,0,0);
   }
 
 void updatePoseFromVision(){
@@ -322,6 +339,8 @@ updatePoseFromVision();
 
 
     drive( hypot*Math.cos(angleOfTravel), hypot * Math.sin (angleOfTravel), angDiff);
+
+    SmartDashboard.putNumberArray("desiredPose",new double[]{desiredPose.getX(),desiredPose.getY(),desiredPose.getRotation().getRadians()});
 
 
   }

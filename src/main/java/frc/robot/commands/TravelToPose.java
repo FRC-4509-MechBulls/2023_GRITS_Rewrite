@@ -43,6 +43,7 @@ public class TravelToPose extends CommandBase {
     public void execute() {
         if(Timer.getFPGATimestamp() - initTime > secondsToTake){
             swerveSubsystem.driveToPose(desiredPose);
+            return;
         }
 
         double interpolatedX = MBUtils.lerp(initialPose.getX(),desiredPose.getX(),(Timer.getFPGATimestamp() - initTime) / secondsToTake);

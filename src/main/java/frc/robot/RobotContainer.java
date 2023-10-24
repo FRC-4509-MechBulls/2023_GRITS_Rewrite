@@ -66,7 +66,7 @@ public class RobotContainer {
     swerveSubsystem.setDefaultCommand(drive);
 
     driver.a().whileTrue(new RunCommand(swerveSubsystem::alignWithClosestNode,swerveSubsystem));
-
+    driver.b().whileTrue(new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem));
 
     driver.start().onTrue(new InstantCommand(swerveSubsystem::resetOdometry));
 
@@ -115,6 +115,9 @@ public class RobotContainer {
     autoChooser.addOption("r_placeBalance", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,true));
     autoChooser.addOption("b_twoCones", Autos.skibidiAutonomous(swerveSubsystem,stateController,false));
     autoChooser.addOption("r_twoCones", Autos.skibidiAutonomous(swerveSubsystem,stateController,true));
+    autoChooser.setDefaultOption("no auto :'( ", null);
+
+
 
   }
 

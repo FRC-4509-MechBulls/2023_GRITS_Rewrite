@@ -6,6 +6,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.TravelToPose;
 import frc.robot.subsystems.ArmState;
@@ -43,30 +44,39 @@ public class Autos {
         Command resetPose = new InstantCommand(()->swerveSubsystem.resetOdometry(new Pose2d(initXFinal, initY, initHeading)));
         Command setInitialArmState = new InstantCommand(()->stateControllerSub.setOverallStateSafe(new ArmState(StateControllerSub.AgArmMode.HOLDING, StateControllerSub.ItemType.CONE, StateControllerSub.ItemIsFallen.FALLEN_CONE, StateControllerSub.PlacementLevel.LEVEL3)));
 
-        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(2)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing));
+        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(1)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.5));
         Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding);
 
-        Command goToPose1 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 1.709 * beBackwardsNow, initY+ 0.239, Rotation2d.fromDegrees(0*beBackwardsNow + angleToAddIfBackwards)), 1,0);
-        Command goToPose2 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(0*beBackwardsNow + angleToAddIfBackwards)), 1,0);
+        Pose2d inBetweenPose = new Pose2d(
+                (initX + (initX+1.709*beBackwardsNow)) / 2.0,
+                (initY + (initY+ 0.239)) / 2.0,
+                Rotation2d.fromDegrees(90*beBackwardsNow+angleToAddIfBackwards)
+        );
+
+        Command goHalfwayToPose1 = new TravelToPose(swerveSubsystem, inBetweenPose, 1, 0); //makes sure we don't kill any volunteers
+
+        Command goToPose1 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 1.709 * beBackwardsNow, initY+ 0.239, Rotation2d.fromDegrees(0*beBackwardsNow + angleToAddIfBackwards)), 2,0);
         Command setIntaking = new InstantCommand(stateControllerSub::setArmModeToIntaking);
-        Command setHeading = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(10*beBackwardsNow + angleToAddIfBackwards)), 0.2,0);
+        Command goToPose2 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(0*beBackwardsNow + angleToAddIfBackwards)), 2,0);
+
+        Command setHeading = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(10*beBackwardsNow + angleToAddIfBackwards)), 0.4,0);
         Command goToConePickup = new TravelToPose(swerveSubsystem, new Pose2d(initX + 5.342 * beBackwardsNow, initY+ 0.400, Rotation2d.fromDegrees(10*beBackwardsNow + angleToAddIfBackwards)), 2,0);
         Command setHolding = new InstantCommand(stateControllerSub::setArmModeToHolding);
 
-        Command returnToPose2 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 1,0);
-        Command returnToPose1 = new TravelToPose(swerveSubsystem, new Pose2d(initX + Units.inchesToMeters(12)*beBackwardsNow, initY+ 0.239, Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2,0);
+        Command returnToPose2 = new TravelToPose(swerveSubsystem, new Pose2d(initX + 3.970 * beBackwardsNow, initY+ 0.159, Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2,0);
+        Command returnToPose1 = new TravelToPose(swerveSubsystem, new Pose2d(initX + Units.inchesToMeters(12)*beBackwardsNow, initY+ 0.239, Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2.5,0);
 
-        Command crabWalk = new TravelToPose(swerveSubsystem, new Pose2d(initX + Units.inchesToMeters(12) * beBackwardsNow, nodeYValues[2], Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2,0.25);
+        Command crabWalk = new TravelToPose(swerveSubsystem, new Pose2d(initX + Units.inchesToMeters(12) * beBackwardsNow, nodeYValues[2], Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2.5,0.25);
 
         Command placeCone = new InstantCommand(stateControllerSub::setArmModeToPlacing);
 
-        Command goToWhereWeWant = new TravelToPose(swerveSubsystem, new Pose2d(initX, nodeYValues[2], Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 1,2);
+        Command goToWhereWeWant = new TravelToPose(swerveSubsystem, new Pose2d(initX, nodeYValues[2], Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2,2);
 
         Command ejectCone = new InstantCommand(stateControllerSub::setArmModeToPostPlacing);
 
 
 
-        return resetPose.andThen(setInitialArmState).andThen(placeConeHigh).andThen(goToHolding).andThen(goToPose1).andThen(goToPose2).andThen(setIntaking).andThen(setHeading).andThen(goToConePickup).andThen(setHolding).andThen(returnToPose2).andThen(returnToPose1).andThen(crabWalk).andThen(placeCone).andThen(goToWhereWeWant).andThen(ejectCone);
+        return resetPose.andThen(setInitialArmState).andThen(placeConeHigh).andThen(goToHolding).andThen(goHalfwayToPose1).andThen(goToPose1).andThen(setIntaking).andThen(goToPose2).andThen(setHeading).andThen(goToConePickup).andThen(setHolding).andThen(returnToPose2).andThen(returnToPose1).andThen(crabWalk).andThen(placeCone).andThen(goToWhereWeWant).andThen(ejectCone);
     }
 
     public static Command placeLeaveBalanceAuto(SwerveSubsystem swerveSubsystem, StateControllerSub stateControllerSub, boolean flippedForRed){
@@ -78,10 +88,13 @@ public class Autos {
         int beBackwardsNow = 1;
         double angleToAddIfBackwards = 0;
 
+
+
         if(flippedForRed){
             beBackwardsNow = -1;
             initX = redAlignmentX;
             angleToAddIfBackwards = 180;
+
         }
 
         Rotation2d initHeading = Rotation2d.fromDegrees(180 + angleToAddIfBackwards);
@@ -91,16 +104,16 @@ public class Autos {
 
         Command resetPose = new InstantCommand(()->swerveSubsystem.resetOdometry(new Pose2d(initXFinal, initY, initHeading)));
         Command setInitialArmState = new InstantCommand(()->stateControllerSub.setOverallStateSafe(new ArmState(StateControllerSub.AgArmMode.HOLDING, StateControllerSub.ItemType.CONE, StateControllerSub.ItemIsFallen.FALLEN_CONE, StateControllerSub.PlacementLevel.LEVEL3)));
-        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(2)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing));
-        Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding);
-        Command leaveCommunity = new TravelToPose(swerveSubsystem, new Pose2d(5.830, initY, initHeading),3,0.25);
-        Command centerOnChargeStation = new TravelToPose(swerveSubsystem, new Pose2d(5.830, nodeYValues[4], initHeading),1,0.25);
-        Command goToChargeStation = new TravelToPose(swerveSubsystem,new Pose2d(), 2);
+        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(1.75)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.25));
+        Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding).andThen(new WaitCommand(1));
+        Command leaveCommunity = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.076 * beBackwardsNow, initY, initHeading),2,0.25);
+        Command centerOnChargeStation = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.076 * beBackwardsNow, nodeYValues[4], initHeading),3,0.25); // 5.83
+        Command goToChargeStation = new TravelToPose(swerveSubsystem,new Pose2d(initX + Units.inchesToMeters(81.6275) * beBackwardsNow, nodeYValues[4], initHeading), 2);
+       // Command balance = new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem);
+        Command balance = new Balance(swerveSubsystem, 5);
 
 
-
-
-        return resetPose.andThen(setInitialArmState).andThen(placeConeHigh).andThen(goToHolding).andThen(leaveCommunity).andThen(centerOnChargeStation);
+        return resetPose.andThen(setInitialArmState).andThen(placeConeHigh).andThen(goToHolding).andThen(leaveCommunity).andThen(centerOnChargeStation).andThen(goToChargeStation).andThen(balance);
     }
 
 
