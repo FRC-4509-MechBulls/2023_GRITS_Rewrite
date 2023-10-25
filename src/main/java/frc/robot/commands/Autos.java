@@ -72,9 +72,9 @@ public class Autos {
 
 
 
-        Command goToWhereWeWant = new TravelToPose(swerveSubsystem, new Pose2d(initX, nodeYValues[2], Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 1,0.5);
+        Command goToWhereWeWant = new TravelToPose(swerveSubsystem, new Pose2d(initX, nodeYValues[2], Rotation2d.fromDegrees(180*beBackwardsNow + angleToAddIfBackwards)), 2,0);
 
-        Command ejectCone = new InstantCommand(stateControllerSub::setArmModeToPostPlacing);
+        Command ejectCone = new InstantCommand(stateControllerSub::setArmModeToPostPlacing).andThen(new WaitCommand(0.2).andThen(new InstantCommand(stateControllerSub::overrideEFStop)));
 
 
 
