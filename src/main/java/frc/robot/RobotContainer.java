@@ -89,6 +89,7 @@ public class RobotContainer {
     operator.rightBumper().onTrue(new InstantCommand(stateController::setItemCube));
     operator.rightTrigger(0.5).onTrue(new InstantCommand(stateController::setItemCube));
 
+    driver.leftTrigger(0.5).onTrue(new InstantCommand(stateController::setArmModeToPostPlacing));
   //  driver.b().onTrue(Autos.skibidiAutonomous(swerveSubsystem,arm,stateController,false));
    // driver.b().onTrue(Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,false));
 
