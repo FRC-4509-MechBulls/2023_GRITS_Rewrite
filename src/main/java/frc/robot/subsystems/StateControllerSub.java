@@ -238,6 +238,10 @@ public class StateControllerSub extends SubsystemBase {
         desiredState.itemIsFallen = ItemIsFallen.NOT_FALLEN;
     }
 
+    public void overrideEFStop(){
+        ef.stopMotors();
+    }
+
 
 /**
     public void invokeSomethingFun(){

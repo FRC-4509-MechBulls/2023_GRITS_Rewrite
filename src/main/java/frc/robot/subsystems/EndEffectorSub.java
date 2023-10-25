@@ -68,11 +68,12 @@ public class EndEffectorSub extends SubsystemBase {
     }
 
     public void placeCone() {
-        upper.set(TalonSRXControlMode.PercentOutput, 0.6);
-        lower.set(TalonSRXControlMode.PercentOutput, -0.6);
+        upper.set(TalonSRXControlMode.PercentOutput, 1);
+        lower.set(TalonSRXControlMode.PercentOutput, -1);
     }
 
     public void placeCubeBottom() {
+        upper.set(TalonSRXControlMode.PercentOutput, 1);
         upper.set(TalonSRXControlMode.PercentOutput, 1);
         lower.set(TalonSRXControlMode.PercentOutput, 0.3);
     }
