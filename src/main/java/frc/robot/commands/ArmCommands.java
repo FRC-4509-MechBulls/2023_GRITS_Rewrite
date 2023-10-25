@@ -12,7 +12,7 @@ public class ArmCommands {
 
     public static Command placeConeL3(Arm arm){
         double[] x = { 0.19, 0.64, 1.19}; // x values
-        double[] y = { 0.03, 0.91, 0.79 }; // y values
+        double[] y = { 0.03, 0.91, 0.79 + Units.inchesToMeters(2) }; // y values
         //   double[] x = { 0.19, 0.67, 1.19}; // x values
         //   double[] y = { 0.03, 0.75, 0.79 }; // y values
 
@@ -32,7 +32,7 @@ public class ArmCommands {
 
     public static Command placeConeL2(Arm arm){
         double[] x = { 0.19, 0.69, .86}; // x values
-        double[] y = { 0.03, 0.48, 0.48 }; // y values
+        double[] y = { 0.03, 0.48, 0.48 + Units.inchesToMeters(1.5)}; // y values
         //   double[] x = { 0.19, 0.67, 1.19}; // x values
         //   double[] y = { 0.03, 0.75, 0.79 }; // y values
 
@@ -78,7 +78,7 @@ public class ArmCommands {
   //      double[] y = { 0.03, 1, 0.79 }; // y values
 
         double[] x = { 0.19, 0.64, 1.19}; // x values
-        double[] y = { 0.03, 0.91, 0.79 }; // y values
+        double[] y = { 0.03, 0.91, 0.79 + Units.inchesToMeters(2) }; // y values
 
         SplineInterpolator interpolator = new SplineInterpolator();
         PolynomialSplineFunction spline = interpolator.interpolate(x, y);
@@ -129,8 +129,8 @@ public class ArmCommands {
 
 
     public static Command placeCubeL2orL3(Arm arm){
-        double[] x = { 0.19, 0.604, 0.935}; // x values
-        double[] y = { 0.03, 0.421, 0.410 }; // y values
+        double[] x = { 0.19, 0.604, 0.935 + Units.inchesToMeters(2)}; // x values
+        double[] y = { 0.03, 0.421, 0.410 + Units.inchesToMeters(4)}; // y values
 
         SplineInterpolator interpolator = new SplineInterpolator();
         PolynomialSplineFunction spline = interpolator.interpolate(x, y);
@@ -146,8 +146,10 @@ public class ArmCommands {
     }
 
     public static Command retractCubeFromL2orL3(Arm arm){
-        double[] x = { 0.19, 0.604, 0.935}; // x values
-        double[] y = { 0.03, 0.421, 0.404 }; // y values
+       // double[] x = { 0.19, 0.604, 0.935}; // x values
+      //  double[] y = { 0.03, 0.421, 0.404 }; // y values
+        double[] x = { 0.19, 0.604, 0.935 + Units.inchesToMeters(2)}; // x values
+        double[] y = { 0.03, 0.421, 0.410 + Units.inchesToMeters(4)}; // y values
 
         SplineInterpolator interpolator = new SplineInterpolator();
         PolynomialSplineFunction spline = interpolator.interpolate(x, y);
