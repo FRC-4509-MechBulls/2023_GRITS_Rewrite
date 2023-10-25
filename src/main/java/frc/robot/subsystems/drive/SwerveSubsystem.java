@@ -14,13 +14,20 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
+import frc.robot.FMSGetter;
 import frc.robot.MBUtils;
 import frc.robot.Robot;
 import org.photonvision.EstimatedRobotPose;
@@ -56,12 +63,11 @@ VisionSubsystem visionSubsystem;
   boolean beFieldOriented = true;
 
 
-
   public SwerveSubsystem(VisionSubsystem visionSubsystem) {
     pigeon.configFactoryDefault();
     pigeon.zeroGyroBiasNow();
     odometry = new SwerveDrivePoseEstimator(kinematics,pigeon.getRotation2d(),getPositions(),new Pose2d());
-    odometry.setVisionMeasurementStdDevs(VecBuilder.fill(10, 10, Units.degreesToRadians(400)));
+    odometry.setVisionMeasurementStdDevs(VecBuilder.fill(7, 7, Units.degreesToRadians(400)));
     this.visionSubsystem = visionSubsystem;
 
     SmartDashboard.putNumber("debugGoTo_x",0);
@@ -101,8 +107,13 @@ VisionSubsystem visionSubsystem;
   double dir = Math.atan2(joystickY,joystickX);
 
   //field oriented :p
+    //oriented to 180 degrees
+    double zeroHeading = 0;
+    if(FMSGetter.isRedAlliance())
+      zeroHeading = Math.PI; 
+
   if(beFieldOriented)
-    dir+=odometry.getEstimatedPosition().getRotation().getRadians();
+    dir+=odometry.getEstimatedPosition().getRotation().getRadians() + zeroHeading;
 
   hypot = Math.pow(hypot,driveExponent) * driveMaxSpeed;
 
