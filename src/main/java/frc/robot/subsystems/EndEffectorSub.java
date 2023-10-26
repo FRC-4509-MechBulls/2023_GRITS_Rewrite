@@ -41,6 +41,8 @@ public class EndEffectorSub extends SubsystemBase {
                 0)); // Trigger Threshold Time(s)
 
 
+        holdCone();
+
     }
 
     public void intakeCone() {
@@ -66,11 +68,12 @@ public class EndEffectorSub extends SubsystemBase {
     }
 
     public void placeCone() {
-        upper.set(TalonSRXControlMode.PercentOutput, 0.3);
-        lower.set(TalonSRXControlMode.PercentOutput, -0.3);
+        upper.set(TalonSRXControlMode.PercentOutput, 1);
+        lower.set(TalonSRXControlMode.PercentOutput, -1);
     }
 
     public void placeCubeBottom() {
+        upper.set(TalonSRXControlMode.PercentOutput, 1);
         upper.set(TalonSRXControlMode.PercentOutput, 1);
         lower.set(TalonSRXControlMode.PercentOutput, 0.3);
     }

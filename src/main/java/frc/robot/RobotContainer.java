@@ -4,12 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Autos;
+import frc.robot.commands.TravelToPose;
 import frc.robot.subsystems.EndEffectorSub;
 import frc.robot.subsystems.StateControllerSub;
 import frc.robot.subsystems.arm.Arm;
@@ -31,6 +36,7 @@ public class RobotContainer {
   VisionSubsystem visionSub = new VisionSubsystem();
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem(visionSub);
   RunCommand drive = new RunCommand(()->swerveSubsystem.joystickDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX()),swerveSubsystem);
+  //RunCommand overcookedDrive = new RunCommand(()->swerveSubsystem.overcookedDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX(), driver.getRightY()),swerveSubsystem);
 
 
 
@@ -45,18 +51,22 @@ public class RobotContainer {
   Command setArmToHolding = stageOneToHolding.andThen(stageTwoToHolding);
 
 
-
+  SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
+
+
   //  driver.rightTrigger(0.5).onTrue(ArmCommands.placeCubeL2orL3(arm));
 //    driver.leftTrigger(0.5).onTrue(ArmCommands.retractCubeFromL2orL3(arm));
 
     swerveSubsystem.setDefaultCommand(drive);
 
+    driver.a().whileTrue(new RunCommand(swerveSubsystem::alignWithClosestNode,swerveSubsystem));
+    driver.b().whileTrue(new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem));
 
     driver.start().onTrue(new InstantCommand(swerveSubsystem::resetOdometry));
 
@@ -79,9 +89,15 @@ public class RobotContainer {
     operator.rightBumper().onTrue(new InstantCommand(stateController::setItemCube));
     operator.rightTrigger(0.5).onTrue(new InstantCommand(stateController::setItemCube));
 
+    driver.leftTrigger(0.5).onTrue(new InstantCommand(stateController::setArmModeToPostPlacing));
+  //  driver.b().onTrue(Autos.skibidiAutonomous(swerveSubsystem,arm,stateController,false));
+   // driver.b().onTrue(Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,false));
+
+ //   driver.y().onTrue(new TravelToPose(swerveSubsystem, new Pose2d(swerveSubsystem.getOdometry().getEstimatedPosition().getX(),swerveSubsystem.getOdometry().getEstimatedPosition().getY(), Rotation2d.fromDegrees(0)),1,1));
 
     // Configure the trigger bindings
     configureBindings();
+    createAutos();
   }
 
   /**
@@ -93,6 +109,19 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
+  private void createAutos(){
+    SmartDashboard.putData(autoChooser);
+    autoChooser.addOption("b_placeBalance", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,false));
+    autoChooser.addOption("r_placeBalance", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,true));
+    autoChooser.addOption("b_twoCones", Autos.skibidiAutonomous(swerveSubsystem,stateController,false));
+    autoChooser.addOption("r_twoCones", Autos.skibidiAutonomous(swerveSubsystem,stateController,true));
+    autoChooser.setDefaultOption("no auto :'( ", null);
+
+
+
+  }
+
   private void configureBindings() {
    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
@@ -104,6 +133,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-      return null;
+      return autoChooser.getSelected();
   }
 }

@@ -6,6 +6,21 @@ public class MBUtils {
         return (1 - t) * value1 + t * value2;
     }
 
+    public static double slerp(double a, double b, double t) { //spherical interpolation (yum!)
+        // Normalize angles
+        double delta = ((b - a) + Math.PI) % (2 * Math.PI) - Math.PI;
+
+        // Make sure we interpolate in the short direction
+        if (delta > Math.PI) {
+            delta -= 2 * Math.PI;
+        } else if (delta < -Math.PI) {
+            delta += 2 * Math.PI;
+        }
+
+        return a + delta * t;
+    }
+
+
     public static double clamp(double input, double absMax){
         absMax = Math.abs(absMax);
 

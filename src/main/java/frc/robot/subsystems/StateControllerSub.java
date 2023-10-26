@@ -166,12 +166,12 @@ public class StateControllerSub extends SubsystemBase {
                     break;
             }
         }
-        if(desiredState.itemType!= oldState.itemType){
+        if(desiredState.itemType!= oldState.itemType){ //TODO: maybe remove this?
             switch(desiredState.itemType){
                 case CONE: ef.holdCone(); break;
                 case CUBE: ef.holdCube(); break;
             }
-            oldState.itemType = desiredState.itemType;
+            oldState.itemType = desiredState.itemType; //remove this too
         }
 
 
@@ -210,6 +210,17 @@ public class StateControllerSub extends SubsystemBase {
         desiredState.placementLevel = PlacementLevel.LEVEL3;
     }
 
+    public void setOverallStateSafe(ArmState state){
+        desiredState.itemType = state.itemType;
+        periodic();
+        desiredState.itemIsFallen = state.itemIsFallen;
+        periodic();
+        desiredState.placementLevel = state.placementLevel;
+        periodic();
+        desiredState.armMode = state.armMode;
+        periodic();
+    }
+
 
 
     public void setItemConeFallen(){
@@ -227,6 +238,10 @@ public class StateControllerSub extends SubsystemBase {
         desiredState.itemIsFallen = ItemIsFallen.NOT_FALLEN;
     }
 
+    public void overrideEFStop(){
+        ef.stopMotors();
+    }
+
 
 /**
     public void invokeSomethingFun(){
@@ -234,4 +249,5 @@ public class StateControllerSub extends SubsystemBase {
     }
 */
 }
+
 
