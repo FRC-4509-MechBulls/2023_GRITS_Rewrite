@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -74,16 +76,18 @@ public class StageOneSub extends SubsystemBase {
 
   }
 
+  GenericEntry diag_encoderConnected = Shuffleboard.getTab("Diagnostics").add("stageOne",false).getEntry();
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
    // SmartDashboard.putNumber("stageOneAngle",getAngle().getDegrees());
 
-   // SmartDashboard.putNumber("rawSensor",primary.getSelectedSensorPosition());
+  //  SmartDashboard.putNumber("stageOne_rawSensor",primary.getSelectedSensorPosition());
   //  SmartDashboard.putNumber("convertedSensor", radToNativeSensorPosition(nativeSensorPositionToRad(primary.getSelectedSensorPosition())));
 
    // SmartDashboard.putNumber("stageOneOutput",primary.getMotorOutputPercent());
-
+    diag_encoderConnected.setBoolean(primary.getSelectedSensorPosition() != 0);
 
 
   }

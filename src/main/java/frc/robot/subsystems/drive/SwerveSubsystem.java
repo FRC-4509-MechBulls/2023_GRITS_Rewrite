@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
@@ -61,7 +62,10 @@ VisionSubsystem visionSubsystem;
   Field2d visionField = new Field2d();
 
   boolean beFieldOriented = true;
-
+  GenericEntry diag_flEncoder = Shuffleboard.getTab("Diagnostics").add("fL_abs",false).getEntry();
+  GenericEntry diag_frEncoder = Shuffleboard.getTab("Diagnostics").add("fR_abs",false).getEntry();
+  GenericEntry diag_rlEncoder = Shuffleboard.getTab("Diagnostics").add("rL_abs",false).getEntry();
+  GenericEntry diag_rrEncoder = Shuffleboard.getTab("Diagnostics").add("rR_abs",false).getEntry();
 
   public SwerveSubsystem(VisionSubsystem visionSubsystem) {
     pigeon.configFactoryDefault();
@@ -70,9 +74,10 @@ VisionSubsystem visionSubsystem;
     odometry.setVisionMeasurementStdDevs(VecBuilder.fill(7, 7, Units.degreesToRadians(400)));
     this.visionSubsystem = visionSubsystem;
 
-    SmartDashboard.putNumber("debugGoTo_x",0);
-    SmartDashboard.putNumber("debugGoTo_y",0);
-    SmartDashboard.putNumber("debugGoTo_deg",0);
+   // SmartDashboard.putNumber("debugGoTo_x",0);
+    //SmartDashboard.putNumber("debugGoTo_y",0);
+    //SmartDashboard.putNumber("debugGoTo_deg",0);
+
 
   }
 
@@ -230,13 +235,13 @@ void updatePoseFromVision(){
     Optional<EstimatedRobotPose> result = visionSubsystem.getEstimatedGlobalPose(odometry.getEstimatedPosition());
     if(result.isPresent()){
       odometry.addVisionMeasurement(result.get().estimatedPose.toPose2d(), result.get().timestampSeconds);
-      SmartDashboard.putNumber("lastVisionX",result.get().estimatedPose.getX());
-      SmartDashboard.putNumber("lastVisionY",result.get().estimatedPose.getY());
+    //  SmartDashboard.putNumber("lastVisionX",result.get().estimatedPose.getX());
+    //  SmartDashboard.putNumber("lastVisionY",result.get().estimatedPose.getY());
       visionField.setRobotPose(result.get().estimatedPose.toPose2d());
-      SmartDashboard.putData("visionField",visionField);
+    //  SmartDashboard.putData("visionField",visionField);
 
 
-      SmartDashboard.putNumber("resultWasPresent",Timer.getFPGATimestamp());
+    //SmartDashboard.putNumber("resultWasPresent",Timer.getFPGATimestamp());
     }
     //add vision measurement if present while passing in current reference pose
 }
@@ -267,7 +272,14 @@ updatePoseFromVision();
 
 
 
-    SmartDashboard.putNumber("closestNodeY",getClosestNodeY());
+   // SmartDashboard.putNumber("closestNodeY",getClosestNodeY());
+    diag_flEncoder.setBoolean(frontLeft.getAbsoluteEncoderRaw() != 0);
+    diag_frEncoder.setBoolean(frontRight.getAbsoluteEncoderRaw() != 0);
+    diag_rlEncoder.setBoolean(rearLeft.getAbsoluteEncoderRaw() != 0);
+    diag_rrEncoder.setBoolean(rearRight.getAbsoluteEncoderRaw() != 0);
+
+
+
 
   }
 

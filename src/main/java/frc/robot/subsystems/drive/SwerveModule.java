@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.OperatorConstants.maxDrivePower;
@@ -99,6 +100,10 @@ public class SwerveModule extends SubsystemBase {
     }
     double getAbsoluteEncoderRad(){
         return absoluteEncoder.getAbsolutePosition()*2*Math.PI + absoluteEncoderOffset;
+    }
+
+    double getAbsoluteEncoderRaw(){
+        return absoluteEncoder.getAbsolutePosition();
     }
 
     static double turningToRad(double turning){

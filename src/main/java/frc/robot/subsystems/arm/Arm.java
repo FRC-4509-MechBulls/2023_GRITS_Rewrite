@@ -95,14 +95,14 @@ public class Arm extends SubsystemBase {
    SmartDashboard.putNumber("stageTwoAngle",getStageTwoAngle().getDegrees());
 
 
-    SmartDashboard.putNumber("ef_x",efPosition[0]);
-    SmartDashboard.putNumber("ef_y",efPosition[1]);
+ //   SmartDashboard.putNumber("Debug/ef_x",efPosition[0]);
+  //  SmartDashboard.putNumber("Debug/ef_y",efPosition[1]);
 
 
     Rotation2d[] calculatedArmAngles = calculateArmAngles(efPosition[0],efPosition[1]);
 
-    SmartDashboard.putNumber("stageOneRad_calculated",calculatedArmAngles[0].getDegrees());
-    SmartDashboard.putNumber("stageTwoRad_calculated",calculatedArmAngles[1].getDegrees());
+   // SmartDashboard.putNumber("stageOneRad_calculated",calculatedArmAngles[0].getDegrees());
+   // SmartDashboard.putNumber("stageTwoRad_calculated",calculatedArmAngles[1].getDegrees());
 
 
       if(Robot.isSimulation()){

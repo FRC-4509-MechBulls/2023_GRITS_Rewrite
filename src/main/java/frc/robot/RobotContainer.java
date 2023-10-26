@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -111,7 +113,7 @@ public class RobotContainer {
    */
 
   private void createAutos(){
-    SmartDashboard.putData(autoChooser);
+    SmartDashboard.putData("AutoChooser",autoChooser);
     autoChooser.addOption("b_placeBalance", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,false));
     autoChooser.addOption("r_placeBalance", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,true));
     autoChooser.addOption("b_twoCones", Autos.skibidiAutonomous(swerveSubsystem,stateController,false));

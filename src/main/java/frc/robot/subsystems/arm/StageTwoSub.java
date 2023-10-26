@@ -7,6 +7,8 @@ package frc.robot.subsystems.arm;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,7 +30,7 @@ public class StageTwoSub extends SubsystemBase {
     SparkMaxAbsoluteEncoder encoder;
 
   public StageTwoSub() {
-    SmartDashboard.putNumber("stageTwoAFFDebug",0);
+   // SmartDashboard.putNumber("stageTwoAFFDebug",0);
 
     primary = new CANSparkMax(stageTwoPrimaryId, CANSparkMaxLowLevel.MotorType.kBrushless);
     secondary = new CANSparkMax(stageTwoSecondaryId, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -108,6 +110,7 @@ public class StageTwoSub extends SubsystemBase {
 
 
   }
+  GenericEntry diag_encoderConnected = Shuffleboard.getTab("Diagnostics").add("stageTwo",false).getEntry();
 
   @Override
   public void periodic() {
@@ -116,9 +119,10 @@ public class StageTwoSub extends SubsystemBase {
 
    //   SmartDashboard.putNumber("stageTwoEncoder",getAngle().getDegrees());
     double error = referenceRad - getAngle().getRadians();
-    SmartDashboard.putNumber("stageTwoError", error);
-    SmartDashboard.putNumber("stageTwoIAccum",pidController.getIAccum());
+   // SmartDashboard.putNumber("stageTwoError", error);
+  //  SmartDashboard.putNumber("stageTwoIAccum",pidController.getIAccum());
 
+  //  SmartDashboard.putNumber("stageTwo_encoder",encoder.getPosition());
     //primary.set(SmartDashboard.getNumber("stageTwoAFFDebug",0));
 
    // if(error>0.25){
@@ -130,6 +134,9 @@ public class StageTwoSub extends SubsystemBase {
 
 
     pidController.setReference(referenceRad, CANSparkMax.ControlType.kPosition,0,aff);
+
+
+    diag_encoderConnected.setBoolean(encoder.getPosition() - encoder.getZeroOffset() != 0);
 
 
   }
