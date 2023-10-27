@@ -44,7 +44,7 @@ public class Autos {
         Command resetPose = new InstantCommand(()->swerveSubsystem.resetOdometry(new Pose2d(initXFinal, initY, initHeading)));
         Command setInitialArmState = new InstantCommand(()->stateControllerSub.setOverallStateSafe(new ArmState(StateControllerSub.AgArmMode.HOLDING, StateControllerSub.ItemType.CONE, StateControllerSub.ItemIsFallen.FALLEN_CONE, StateControllerSub.PlacementLevel.LEVEL3)));
 
-        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(1.75)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.1));
+        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(1.75)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.20));
         Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding).andThen(new WaitCommand(0.5));
 
         Pose2d inBetweenPose = new Pose2d(
