@@ -128,19 +128,13 @@ VisionSubsystem visionSubsystem;
 
 
 /* Angular adjustment stuff */
-  if(Math.abs(rad)>radPerSecondDeadband || lastStillHeading.getDegrees() == 0){
-    lastStillHeading = Rotation2d.fromDegrees(pigeon.getAngle());
-  }
-  double diffDeg = MBUtils.angleDiffDeg(pigeon.getAngle(),lastStillHeading.getDegrees());
-  double radFeed = diffDeg * (1.0/25) ;  //this was responsible for the slap
-
-  radFeed = MBUtils.clamp(radFeed,radFeedClamp);
-
-  if(Math.abs(diffDeg)>25) radFeed = 0;
-  if(!beFieldOriented) radFeed = 0;
+//  if(Math.abs(rad)>radPerSecondDeadband || lastStillHeading.getDegrees() == 0){
+//    lastStillHeading = Rotation2d.fromDegrees(pigeon.getAngle());
+//  }
 
 
-  drive(-joystickY ,-joystickX ,-rad - radFeed);
+
+  drive(-joystickY ,-joystickX ,-rad);
 }
 
 
@@ -168,7 +162,18 @@ public void drive(double xMeters,double yMeters, double rad){
   if(Math.abs(rad)>radPerSecondDeadband || lastStillHeading.getDegrees() == 0){
     lastStillHeading = Rotation2d.fromDegrees(pigeon.getAngle());
   }
-  SwerveModuleState[] states = kinematics.toSwerveModuleStates(new ChassisSpeeds(xMeters,yMeters,rad));
+
+  double diffDeg = MBUtils.angleDiffDeg(pigeon.getAngle(),lastStillHeading.getDegrees());
+  double radFeed = diffDeg * (1.0/25) ;  //this was responsible for the slap
+
+  radFeed = MBUtils.clamp(radFeed,radFeedClamp);
+
+  if(Math.abs(diffDeg)>25) radFeed = 0;
+  if(!beFieldOriented) radFeed = 0;
+
+
+
+  SwerveModuleState[] states = kinematics.toSwerveModuleStates(new ChassisSpeeds(xMeters,yMeters,rad - radFeed));
 
   setStates(states);
 
