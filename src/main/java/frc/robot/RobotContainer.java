@@ -76,7 +76,7 @@ public class RobotContainer {
     operator.a().onTrue(new InstantCommand(stateController::setArmModeToIntaking));
     operator.b().onTrue(new InstantCommand(stateController::setArmModeToHolding));
     operator.y().onTrue(new InstantCommand(stateController::setArmModeToPlacing));
-    operator.x().onTrue(new InstantCommand(stateController::setArmModeToPostPlacing));
+  //  operator.x().onTrue(new InstantCommand(stateController::setArmModeToPostPlacing));
 
     operator.povUp().onTrue(new InstantCommand(stateController::setArmLevelBottom));
     operator.povRight().onTrue(new InstantCommand(stateController::setArmLevelMiddle));
