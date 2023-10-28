@@ -72,6 +72,8 @@ public class RobotContainer {
 
     driver.back().onTrue(new InstantCommand(swerveSubsystem::toggleFieldOriented));
 
+    driver.x().whileTrue(new RunCommand(swerveSubsystem::xConfig,swerveSubsystem));
+
 
     operator.a().onTrue(new InstantCommand(stateController::setArmModeToIntaking));
     operator.b().onTrue(new InstantCommand(stateController::setArmModeToHolding));
