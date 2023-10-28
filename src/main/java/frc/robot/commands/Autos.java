@@ -109,7 +109,7 @@ public class Autos {
         Command setInitialArmState = new InstantCommand(()->stateControllerSub.setOverallStateSafe(new ArmState(StateControllerSub.AgArmMode.HOLDING, StateControllerSub.ItemType.CONE, StateControllerSub.ItemIsFallen.FALLEN_CONE, StateControllerSub.PlacementLevel.LEVEL3)));
         Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(1.75)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.25));
         Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding).andThen(new WaitCommand(0.75));
-        Command leaveCommunity = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.576 * beBackwardsNow, initY, initHeading),4,1);
+        Command leaveCommunity = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.576 * beBackwardsNow, initY, initHeading),2,1);
         Command centerOnChargeStation = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.076 * beBackwardsNow, nodeYValues[4], initHeading),0.5,0.5); // 5.83
         Command goToChargeStation = new TravelToPose(swerveSubsystem,new Pose2d(initX + Units.inchesToMeters(81.6275) * beBackwardsNow, nodeYValues[4], initHeading), 2);
        // Command balance = new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem);
