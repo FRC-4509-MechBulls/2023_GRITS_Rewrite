@@ -152,7 +152,46 @@ public class Autos {
         Command leaveCommunity = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.576 * beBackwardsNow, initY, initHeading),2,1);
         Command centerOnChargeStation = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.076 * beBackwardsNow, nodeYValues[4], initHeading),0.5,0.7); // 5.83
         Command goToChargeStation = new TravelToPose(swerveSubsystem,new Pose2d(initX + Units.inchesToMeters(81.6275) * beBackwardsNow, nodeYValues[4], initHeading), 0.3,1);
-       // Command balance = new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem);
+        // Command balance = new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem);
+        Command balance = new Balance(swerveSubsystem, 7);
+
+
+        return resetPose.andThen(setInitialArmState).andThen(placeConeHigh).andThen(goToHolding).andThen(leaveCommunity).andThen(centerOnChargeStation).andThen(goToChargeStation).andThen(balance);
+    }
+
+
+
+    public static Command placeLeaveBalanceAutoAlt(SwerveSubsystem swerveSubsystem, StateControllerSub stateControllerSub, boolean flippedForRed){
+
+        double initX = blueAlignmentX;
+        double initY = nodeYValues[3];
+
+
+        int beBackwardsNow = 1;
+        double angleToAddIfBackwards = 0;
+
+
+
+        if(flippedForRed){
+            beBackwardsNow = -1;
+            initX = redAlignmentX;
+            angleToAddIfBackwards = 180;
+
+        }
+
+        Rotation2d initHeading = Rotation2d.fromDegrees(180 + angleToAddIfBackwards);
+
+        final double initXFinal = initX;
+
+
+        Command resetPose = new InstantCommand(()->swerveSubsystem.resetOdometry(new Pose2d(initXFinal, initY, initHeading)));
+        Command setInitialArmState = new InstantCommand(()->stateControllerSub.setOverallStateSafe(new ArmState(StateControllerSub.AgArmMode.HOLDING, StateControllerSub.ItemType.CONE, StateControllerSub.ItemIsFallen.FALLEN_CONE, StateControllerSub.PlacementLevel.LEVEL3)));
+        Command placeConeHigh = new InstantCommand(stateControllerSub::setArmModeToPlacing).andThen(new WaitCommand(1.75)).andThen(new InstantCommand(stateControllerSub::setArmModeToPostPlacing)).andThen(new WaitCommand(0.25));
+        Command goToHolding = new InstantCommand(stateControllerSub::setArmModeToHolding).andThen(new WaitCommand(0.75));
+        Command leaveCommunity = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.576 * beBackwardsNow, initY, initHeading),2,1);
+        Command centerOnChargeStation = new TravelToPose(swerveSubsystem, new Pose2d(initX + 4.076 * beBackwardsNow, nodeYValues[4], initHeading),0.5,0.7); // 5.83
+        Command goToChargeStation = new TravelToPose(swerveSubsystem,new Pose2d(initX + Units.inchesToMeters(81.6275) * beBackwardsNow, nodeYValues[4], initHeading), 0.3,1);
+        // Command balance = new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem);
         Command balance = new Balance(swerveSubsystem, 7);
 
 
