@@ -162,7 +162,7 @@ public class ArmCommands {
     public static Command intakeCube(Arm arm){
         //(0.645, -0.152)
 
-        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.645,-0.152,1);
+        ArmToPointLinearTimed command = new ArmToPointLinearTimed(arm,0.645 - Units.inchesToMeters(6),-0.152,1);
 
         return command;
     }

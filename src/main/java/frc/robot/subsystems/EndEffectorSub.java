@@ -51,7 +51,7 @@ public class EndEffectorSub extends SubsystemBase {
     }
 
     public void intakeCube() {
-        upper.set(TalonSRXControlMode.PercentOutput, 0);
+        upper.set(TalonSRXControlMode.PercentOutput, -0.2);
         lower.set(TalonSRXControlMode.PercentOutput, -1);
     }
 

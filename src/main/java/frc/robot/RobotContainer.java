@@ -114,10 +114,14 @@ public class RobotContainer {
 
   private void createAutos(){
     SmartDashboard.putData(autoChooser);
-    autoChooser.addOption("b_placeBalance", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,false));
-    autoChooser.addOption("r_placeBalance", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,true));
-    autoChooser.addOption("b_twoCones", Autos.skibidiAutonomous(swerveSubsystem,stateController,false));
-    autoChooser.addOption("r_twoCones", Autos.skibidiAutonomous(swerveSubsystem,stateController,true));
+    autoChooser.addOption("b_placeBalanceCenter", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,false));
+    autoChooser.addOption("r_placeBalanceCenter", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,true));
+    autoChooser.addOption("b_twoConesCableSide", Autos.skibidiAutonomous(swerveSubsystem,stateController,false));
+    autoChooser.addOption("r_twoConesCableSide", Autos.skibidiAutonomous(swerveSubsystem,stateController,true));
+
+    autoChooser.addOption("b_oneConeLeaveCableSide", Autos.skibidiWithoutSecondCone(swerveSubsystem,stateController,false));
+    autoChooser.addOption("r_oneConeLeaveCableSide", Autos.skibidiWithoutSecondCone(swerveSubsystem,stateController,true));
+
     autoChooser.setDefaultOption("no auto :'( ", null);
 
 

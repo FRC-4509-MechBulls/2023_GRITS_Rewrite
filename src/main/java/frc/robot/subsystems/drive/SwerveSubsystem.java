@@ -218,7 +218,7 @@ double lastSimDriveUpdateTime = 0;
 
   public void autoBalanceForward(){
     double roll = pigeon.getRoll(); //probably in degrees
-    double speedForward = roll*(1.0/115);
+    double speedForward = roll*(1.0/100);
 
     if(roll>15)
       speedForward = 0.5;
