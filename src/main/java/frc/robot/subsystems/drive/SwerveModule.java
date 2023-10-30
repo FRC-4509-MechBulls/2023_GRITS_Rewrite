@@ -59,7 +59,7 @@ public class SwerveModule extends SubsystemBase {
 
         driveMotor.configNeutralDeadband(driveNeutralDeadband);
 
-        driveMotor.setNeutralMode(NeutralMode.Coast);
+        driveMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.setInverted(driveMotorReversed);
 
         driveMotor.configPeakOutputForward(maxDrivePower,1000);
@@ -125,6 +125,13 @@ public class SwerveModule extends SubsystemBase {
             driveMotor.set(ControlMode.Velocity,0);
             return;
         }
+
+        setStateWithoutDeadband(state);
+
+    }
+
+    public void setStateWithoutDeadband(SwerveModuleState state) {
+
         state = SwerveModuleState.optimize(state,Rotation2d.fromRadians(getAngle())); //minimize change in heading
 
         double delta = state.angle.getRadians() - getAngle(); //error
@@ -134,6 +141,8 @@ public class SwerveModule extends SubsystemBase {
 
         turningMotor.set(ControlMode.Position,radToTurning(setAngle));
         driveMotor.set(ControlMode.Velocity, driveMetersPerSecondToFalcon(state.speedMetersPerSecond));
+
+
     }
 
     public double driveMetersPerSecondToFalcon(double metersPerSecond){ //untested

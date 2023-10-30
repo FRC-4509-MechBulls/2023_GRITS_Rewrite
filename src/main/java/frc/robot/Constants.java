@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+
+import java.util.ArrayList;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -22,8 +26,8 @@ public final class Constants {
     public static final double translationkP = 4;
     public static final double rotationkP = 4;
 
-    public static final double maxTranslation = 1;
-    public static final double maxRotation = 1;
+    public static final double maxTranslation = 6.5;
+    public static final double maxRotation = 2;
 
   }
   public static class OperatorConstants {
@@ -34,8 +38,10 @@ public final class Constants {
     public static final double turnExponent = 1.8;
     public static final double turnMaxSpeed = 11; //11
 
+
     public static final double maxDrivePower = 1;
 
+    public static final double controllerDeadband = 0.06;
 
     public static final double radFeedClamp = 0.5; //max heading adjustment speed
   }
@@ -105,7 +111,7 @@ public final class Constants {
 
     public static final double turningMotorkP = 0.2;
     public static final double turningMotorkI = 0.0;
-    public static final double turningMotorkD = 0.0;
+    public static final double turningMotorkD = 0.01;
     public static final double turningMotorkF = 0.0;
 
 
@@ -114,14 +120,14 @@ public final class Constants {
 
   public static class ArmConstants {
 
-    public static final double stageOnekP = 8;
+    public static final double stageOnekP = 6;
     public static final double stageOnekI = 0.0;
     public static final double stageOnekD = 0.0;
     public static final double stageOnekF = 0.0;
 
-    public static final double stageTwokP = 0.3;
-    public static final double stageTwokI = 0.001;
-    public static final double stageTwokD = 2;
+    public static final double stageTwokP = 0.6; //0.8
+    public static final double stageTwokI = 0.001; //0.001
+    public static final double stageTwokD = 3; //2
     public static final double stageTwokF = 0.0;
 
 
@@ -152,8 +158,48 @@ public final class Constants {
     public static final double stageTwoLength = Units.inchesToMeters(28.75);
     public static final double stageTwoEncoderOffset = Units.degreesToRadians(43.6);//180 - 43.6 //43.6 + 180
     public static final double stageTwoEncoderRatio = 1;//32.0/22
+
+
+   // public static final double[] affAnglesDegreesX = {-90,-73,-62,-54,-39,-30,-24,-17,-13,-11,-7,0,
+   //         7,11,13,17,24,30,39,54,62,73,90};
+  //  public static final double[] affPercentOutsY = {0.01,0.02,0.025,0.03,0.035,0.0375,0.04,0.042,0.043,0.046,0.047,
+  //          0.047,0.046,0.043,0.042,0.04,0.0375,0.035,0.03,0.025,0.02,0.01,0};
+  }
+
+  public static class EfConstants { //end effector motor ids
+    public static int EF_UPPER_PORT = 12;
+    public static int EF_LOWER_PORT = 14;
   }
 
 
+  public static final class FieldConstants{
 
+    public static Pose2d[] alignmentPoses = new Pose2d[18];
+
+    public static final double[] nodeYValues = new double[] {
+            Units.inchesToMeters(20.19 + 22.0 * 0),
+            Units.inchesToMeters(20.19 + 22.0 * 1),
+            Units.inchesToMeters(20.19 + 22.0 * 2),
+            Units.inchesToMeters(20.19 + 22.0 * 3),
+            Units.inchesToMeters(20.19 + 22.0 * 4),
+            Units.inchesToMeters(20.19 + 22.0 * 5),
+            Units.inchesToMeters(20.19 + 22.0 * 6),
+            Units.inchesToMeters(20.19 + 22.0 * 7),
+            Units.inchesToMeters(20.19 + 22.0 * 8)
+  };
+
+
+
+    public static final double blueAlignmentX = Units.inchesToMeters(69.0625);
+    public static final double fieldLength = Units.inchesToMeters(651.25);
+    public static final double redAlignmentX = fieldLength - blueAlignmentX;
+
+    static{
+      for(int i = 0; i<9; i++){
+        alignmentPoses[i] = new Pose2d(blueAlignmentX,nodeYValues[i], Rotation2d.fromDegrees(180));
+        alignmentPoses[i+9] = new Pose2d(redAlignmentX,nodeYValues[i], Rotation2d.fromDegrees(0));
+      }
+    }
+
+  }
 }
