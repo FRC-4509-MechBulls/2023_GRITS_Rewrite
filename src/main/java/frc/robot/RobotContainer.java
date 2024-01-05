@@ -14,10 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Autos;
-import frc.robot.commands.TravelToPose;
-import frc.robot.subsystems.EndEffectorSub;
-import frc.robot.subsystems.StateControllerSub;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.SwerveSubsystem;
 import frc.robot.subsystems.drive.VisionSubsystem;
 
@@ -36,19 +32,14 @@ public class RobotContainer {
   VisionSubsystem visionSub = new VisionSubsystem();
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem(visionSub);
   RunCommand drive = new RunCommand(()->swerveSubsystem.joystickDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX()),swerveSubsystem);
+
+
+  RunCommand driveFFTest = new RunCommand(()->swerveSubsystem.driveToPose(new Pose2d(), 1, 1, driver.getLeftY(),driver.getLeftX(), driver.getRightX()),swerveSubsystem);
   //RunCommand overcookedDrive = new RunCommand(()->swerveSubsystem.overcookedDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX(), driver.getRightY()),swerveSubsystem);
 
 
 
 
-  Arm arm = new Arm();
-  EndEffectorSub endEffectorSub = new EndEffectorSub();
-
-  StateControllerSub stateController = new StateControllerSub(arm,endEffectorSub);
-
-  Command stageOneToHolding = new InstantCommand(()->arm.setStageOneAngle(Rotation2d.fromDegrees(90)));
-  Command stageTwoToHolding = new InstantCommand(()->arm.setStageTwoAngle(Rotation2d.fromDegrees(15)));
-  Command setArmToHolding = stageOneToHolding.andThen(stageTwoToHolding);
 
 
   SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -65,7 +56,7 @@ public class RobotContainer {
 
     swerveSubsystem.setDefaultCommand(drive);
 
-    driver.a().whileTrue(new RunCommand(swerveSubsystem::alignWithClosestNode,swerveSubsystem));
+//
     driver.b().whileTrue(new RunCommand(swerveSubsystem::autoBalanceForward,swerveSubsystem));
 
     driver.start().onTrue(new InstantCommand(swerveSubsystem::resetOdometry));
@@ -74,28 +65,7 @@ public class RobotContainer {
 
     driver.x().whileTrue(new RunCommand(swerveSubsystem::xConfig,swerveSubsystem));
 
-
-    operator.a().onTrue(new InstantCommand(stateController::setArmModeToIntaking));
-    operator.b().onTrue(new InstantCommand(stateController::setArmModeToHolding));
-    operator.y().onTrue(new InstantCommand(stateController::setArmModeToPlacing));
-  //  operator.x().onTrue(new InstantCommand(stateController::setArmModeToPostPlacing));
-
-    operator.povUp().onTrue(new InstantCommand(stateController::setArmLevelBottom));
-    operator.povRight().onTrue(new InstantCommand(stateController::setArmLevelMiddle));
-    operator.povLeft().onTrue(new InstantCommand(stateController::setArmLevelMiddle));
-    operator.povDown().onTrue(new InstantCommand(stateController::setArmLevelTop));
-
-    operator.leftTrigger(0.5).onTrue(new InstantCommand(stateController::setItemConeFallen));
-
-    operator.leftBumper().onTrue(new InstantCommand(stateController::setItemConeUpright));
-    operator.rightBumper().onTrue(new InstantCommand(stateController::setItemCube));
-    operator.rightTrigger(0.5).onTrue(new InstantCommand(stateController::setItemCube));
-
-    driver.leftTrigger(0.5).onTrue(new InstantCommand(stateController::setArmModeToPostPlacing));
-  //  driver.b().onTrue(Autos.skibidiAutonomous(swerveSubsystem,arm,stateController,false));
-   // driver.b().onTrue(Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,false));
-
- //   driver.y().onTrue(new TravelToPose(swerveSubsystem, new Pose2d(swerveSubsystem.getOdometry().getEstimatedPosition().getX(),swerveSubsystem.getOdometry().getEstimatedPosition().getY(), Rotation2d.fromDegrees(0)),1,1));
+    driver.a().onTrue(Autos.ballerAuto(swerveSubsystem));
 
     // Configure the trigger bindings
     configureBindings();
@@ -114,17 +84,6 @@ public class RobotContainer {
 
   private void createAutos(){
     SmartDashboard.putData(autoChooser);
-    autoChooser.addOption("b_placeBalanceCenter", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,false));
-    autoChooser.addOption("r_placeBalanceCenter", Autos.placeLeaveBalanceAuto(swerveSubsystem,stateController,true));
-
-    autoChooser.addOption("b_placeBalanceCenterAlt", Autos.placeLeaveBalanceAutoAlt(swerveSubsystem,stateController,false));
-    autoChooser.addOption("r_placeBalanceCenterAlt", Autos.placeLeaveBalanceAutoAlt(swerveSubsystem,stateController,true));
-
-    autoChooser.addOption("b_twoConesCableSide", Autos.skibidiAutonomous(swerveSubsystem,stateController,false));
-    autoChooser.addOption("r_twoConesCableSide", Autos.skibidiAutonomous(swerveSubsystem,stateController,true));
-
-    autoChooser.addOption("b_oneConeLeaveCableSide", Autos.skibidiWithoutSecondCone(swerveSubsystem,stateController,false));
-    autoChooser.addOption("r_oneConeLeaveCableSide", Autos.skibidiWithoutSecondCone(swerveSubsystem,stateController,true));
 
     autoChooser.setDefaultOption("no auto :'( ", null);
 

@@ -104,7 +104,7 @@ public class SwerveModule extends SubsystemBase {
     static double turningToRad(double turning){
         turning/=falconTicks;
         turning/=turningGearRatio;
-        turning*=2*Math.PI;
+        turning*= 2*Math.PI;
         return turning;
     }
 
@@ -146,15 +146,16 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public double driveMetersPerSecondToFalcon(double metersPerSecond){ //untested
-        metersPerSecond *= 10; //convert from 1000ms to 100ms
+        metersPerSecond /= 10; //convert from 1000ms to 100ms
         metersPerSecond = driveMetersToFalcon(metersPerSecond);
         return metersPerSecond;
     }
 
     public double driveMetersToFalcon(double meters){
         meters /= wheelCircumferenceMeters; //meters to rotations
-        meters *= falconTicks; //rotations to sensor units
-        meters /= driveMotorGearRatio; //wheel rotations to motor rotations
+        meters *= Constants.DriveConstants.falconTicks; //rotations to sensor units
+        meters *= driveMotorGearRatio; //wheel rotations to motor rotations
+
         return meters;
     }
 
@@ -172,6 +173,11 @@ public class SwerveModule extends SubsystemBase {
     public SwerveModulePosition getPosition(){
       //  SmartDashboard.putNumber("sensorPosDrive",falconToDriveMeters(driveMotor.getSelectedSensorPosition()));
         return new SwerveModulePosition(falconToDriveMeters(driveMotor.getSelectedSensorPosition()),new Rotation2d(getAngle()));
+    }
+
+    public double getModuleVelocity(){
+      //  return driveMotor.getSelectedSensorVelocity();
+        return falconToDriveMeters(driveMotor.getSelectedSensorVelocity()) * 10;
     }
 
 

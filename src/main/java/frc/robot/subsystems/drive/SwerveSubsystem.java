@@ -138,11 +138,7 @@ VisionSubsystem visionSubsystem;
 }
 
 
-public void alignWithClosestNode(){
-   // Pose2d pose = new Pose2d(SmartDashboard.getNumber("debugGoTo_x",0),SmartDashboard.getNumber("debugGoTo_y",0),Rotation2d.fromDegrees(SmartDashboard.getNumber("debugGoTo_deg",0)));
-  Pose2d closestPose = getClosestNode();
-    driveToPose(closestPose,1,1);
-}
+
 
 public void xConfig() {
 
@@ -250,6 +246,8 @@ void updatePoseFromVision(){
   public void periodic() {
     // This method will be called once per scheduler run
 
+    SmartDashboard.putNumber("FLVel",frontLeft.getModuleVelocity());
+
 odometry.updateWithTime(Timer.getFPGATimestamp(),pigeon.getRotation2d(),getPositions());
 
 updatePoseFromVision();
@@ -320,10 +318,10 @@ updatePoseFromVision();
   }
 
   public void driveToPose(Pose2d desiredPose){
-    driveToPose(desiredPose, maxRotation,maxTranslation);
+    driveToPose(desiredPose, maxTranslation,maxRotation,0,0,0);
   }
 
-  public void driveToPose(Pose2d desiredPose, double maxSpeed, double maxRot){
+  public void driveToPose(Pose2d desiredPose, double maxSpeed, double maxRot,double xFF, double yFF, double radFF){
     Pose2d myPose = odometry.getEstimatedPosition();
 
     double xDiff = desiredPose.getX() - myPose.getX();
@@ -354,7 +352,7 @@ updatePoseFromVision();
 
 
 
-    drive( hypot*Math.cos(angleOfTravel), hypot * Math.sin (angleOfTravel), angDiff);
+    drive( hypot*Math.cos(angleOfTravel) + xFF, hypot * Math.sin(angleOfTravel) + yFF, angDiff + radFF);
 
     SmartDashboard.putNumberArray("desiredPose",new double[]{desiredPose.getX(),desiredPose.getY(),desiredPose.getRotation().getRadians()});
 
