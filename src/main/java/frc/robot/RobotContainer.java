@@ -27,19 +27,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   CommandXboxController driver = new CommandXboxController(0);
-  CommandXboxController operator = new CommandXboxController(1);
 
   VisionSubsystem visionSub = new VisionSubsystem();
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem(visionSub);
   RunCommand drive = new RunCommand(()->swerveSubsystem.joystickDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX()),swerveSubsystem);
-
-
-  RunCommand driveFFTest = new RunCommand(()->swerveSubsystem.driveToPose(new Pose2d(), 1, 1, driver.getLeftY(),driver.getLeftX(), driver.getRightX()),swerveSubsystem);
-  //RunCommand overcookedDrive = new RunCommand(()->swerveSubsystem.overcookedDrive(driver.getLeftX(),driver.getLeftY(),driver.getRightX(), driver.getRightY()),swerveSubsystem);
-
-
-
-
 
 
   SendableChooser<Command> autoChooser = new SendableChooser<>();

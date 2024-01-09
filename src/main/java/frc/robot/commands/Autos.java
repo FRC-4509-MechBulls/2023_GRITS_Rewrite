@@ -14,16 +14,10 @@ public class Autos {
     public static Command ballerAuto(SwerveSubsystem swerveSubsystem){
         Command resetPose = new InstantCommand(swerveSubsystem::resetOdometry);
 
-        TravelToPose pose1 = new TravelToPose(swerveSubsystem, new Pose2d(1,0,Rotation2d.fromDegrees(0)),1,0);
-        TravelToPose pose2 = new TravelToPose(swerveSubsystem, new Pose2d(1,1,Rotation2d.fromDegrees(0)),1,0);
-        TravelToPose pose3 = new TravelToPose(swerveSubsystem, new Pose2d(0,1,Rotation2d.fromDegrees(0)),1,0);
-        TravelToPose pose4 = new TravelToPose(swerveSubsystem, new Pose2d(0,0,Rotation2d.fromDegrees(0)),1,0);
+        TravelToPose pose1 = new TravelToPose(swerveSubsystem, new Pose2d(0,2,Rotation2d.fromDegrees(90)),1.5,0);
 
-        Command waitCommand = new WaitCommand(1);
 
-        TravelToPose pose5 = new TravelToPose(swerveSubsystem, new Pose2d(0,4,Rotation2d.fromDegrees(90)),4,0);
-
-         return resetPose.andThen(pose1).andThen(pose2).andThen(pose3.andThen(pose4)).andThen(waitCommand).andThen(pose5);
+        return resetPose.andThen(pose1);
        // return resetPose.andThen(pose1);
     }
 

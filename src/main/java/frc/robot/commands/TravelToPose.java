@@ -49,17 +49,45 @@ public class TravelToPose extends CommandBase {
         //    swerveSubsystem.driveToPose(desiredPose);
             return;
         }
+        double aggression = 2;
 
-        double interpolatedX = MBUtils.lerp(initialPose.getX(),desiredPose.getX(),(Timer.getFPGATimestamp() - initTime) / secondsToTake);
-        double interpolatedY = MBUtils.lerp(initialPose.getY(),desiredPose.getY(),(Timer.getFPGATimestamp() - initTime) / secondsToTake);
-        double interpolatedAngle = MBUtils.slerp(initialPose.getRotation().getRadians(), desiredPose.getRotation().getRadians(), (Timer.getFPGATimestamp() - initTime) / secondsToTake);
+        double interpolatedX = MBUtils.easeInOut(initialPose.getX(),desiredPose.getX(),(Timer.getFPGATimestamp() - initTime) / secondsToTake, aggression);
+        double interpolatedY = MBUtils.easeInOut(initialPose.getY(),desiredPose.getY(),(Timer.getFPGATimestamp() - initTime) / secondsToTake,aggression);
+        double interpolatedAngle = MBUtils.easeInOutSlerp(initialPose.getRotation().getRadians(), desiredPose.getRotation().getRadians(), (Timer.getFPGATimestamp() - initTime) / secondsToTake,aggression);
 
         Pose2d pPose = new Pose2d(interpolatedX,interpolatedY, Rotation2d.fromRadians(interpolatedAngle));
 
 
         Translation2d transDiff = desiredPose.getTranslation().minus(initialPose.getTranslation());
-        double transSpeed = Math.hypot(transDiff.getX(), transDiff.getY()) / secondsToTake;
-        double rotVelocity = desiredPose.getRotation().minus(initialPose.getRotation()).getRadians() / secondsToTake;
+     //   double transSpeed = Math.hypot(transDiff.getX(), transDiff.getY()) / secondsToTake;
+      //  double rotVelocity = desiredPose.getRotation().minus(initialPose.getRotation()).getRadians() / secondsToTake;
+
+        /** new */
+        double currentTime = (Timer.getFPGATimestamp() - initTime) / secondsToTake;
+        double deltaT = 0.001; // small time increment
+        double futureTime = currentTime + deltaT;
+
+// Calculate current and future positions
+        double currentX = MBUtils.easeInOut(initialPose.getX(), desiredPose.getX(), currentTime,aggression);
+        double futureX = MBUtils.easeInOut(initialPose.getX(), desiredPose.getX(), futureTime,aggression);
+        double currentY = MBUtils.easeInOut(initialPose.getY(), desiredPose.getY(), currentTime,aggression);
+        double futureY = MBUtils.easeInOut(initialPose.getY(), desiredPose.getY(), futureTime,aggression);
+
+// Calculate velocity
+        double velocityX = (futureX - currentX) / (deltaT * secondsToTake);
+        double velocityY = (futureY - currentY) / (deltaT * secondsToTake);
+
+        double transSpeed = Math.hypot(velocityX,velocityY);
+
+// Calculate current and future angles
+        double currentAngle = MBUtils.easeInOutSlerp(initialPose.getRotation().getRadians(), desiredPose.getRotation().getRadians(), currentTime,aggression);
+        double futureAngle = MBUtils.easeInOutSlerp(initialPose.getRotation().getRadians(), desiredPose.getRotation().getRadians(), futureTime,aggression);
+
+// Calculate angular velocity
+        double rotVelocity = (futureAngle - currentAngle) / (deltaT * secondsToTake);
+
+
+/**End new*/
 
         double angleOfDiff = Math.atan2(transDiff.getY(),transDiff.getX()); //angle between two poses
 
@@ -71,10 +99,10 @@ public class TravelToPose extends CommandBase {
         SmartDashboard.putNumber("transSpeed",transSpeed);
 
         //swerveSubsystem.drive(0,0,0);
-       // swerveSubsystem.driveToPose(pPose);
-        swerveSubsystem.driveToPose(pPose,0.2,0.2,Math.cos(angleOfTravel)*transSpeed, Math.sin(angleOfTravel)*transSpeed, rotVelocity);
+        //swerveSubsystem.driveToPose(pPose);
+        //swerveSubsystem.driveToPose(pPose,0,0,Math.cos(angleOfTravel)*transSpeed, Math.sin(angleOfTravel)*transSpeed, rotVelocity);
 
-        //swerveSubsystem.driveToPose(pPose,0.5,0.5,Math.cos(angleOfTravel)*transSpeed, Math.sin(angleOfTravel)*transSpeed, rotVelocity);
+        swerveSubsystem.driveToPose(pPose,0.2,0.2,Math.cos(angleOfTravel)*transSpeed, Math.sin(angleOfTravel)*transSpeed, rotVelocity);
 
 
 

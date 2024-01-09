@@ -48,6 +48,32 @@ public class MBUtils {
         return input;
     }
 
+  //  public static double easeInOut(double t) {
+  //      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  //  }
+
+    public static double easeInOut(double t, double a) {
+        if (a < 1) {
+            a = 1; // Prevents division by zero and maintains at least the original curve's shape
+        }
+
+        if (t < 0.5) {
+            return Math.pow(2 * t, a) / 2;
+        } else {
+            return (2 - Math.pow(2 * (1 - t), a)) / 2;
+        }
+    }
+
+
+
+    public static double easeInOut(double value1, double value2, double t, double aggression){
+        return lerp(value1,value2,easeInOut(t,aggression));
+    }
+
+    public static double easeInOutSlerp(double value1, double value2, double t, double aggression){ //sus!
+        return slerp(value1, value2, easeInOut(t, aggression));
+    }
+
     public static double interpolate(double[] xValues, double[] yValues, double x) {
         // Ensure the arrays have the same length
         if (xValues.length != yValues.length) {
